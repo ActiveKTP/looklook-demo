@@ -81,7 +81,7 @@ export class PlaceService {
   constructor(private http: HttpClient) {}
 
   getPlaces(dataTablesParameters: any): Observable<DataTablesResponse> {
-    const url = `${this.apiUrl}?page=1&limit=10`;
+    const url = `${this.apiUrl}?lat=13.905877&long=100.520883&radius=10&limit=10`;
 
     console.log(dataTablesParameters);
 
