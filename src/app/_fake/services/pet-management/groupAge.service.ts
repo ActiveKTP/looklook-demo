@@ -5,9 +5,9 @@ import { Token } from '../token.service';
 
 @Injectable({
     providedIn: 'root'
-  })
-  
-  export class PetGroupAgeService {
+})
+
+export class PetGroupAgeService {
 
     private mockgroupAges = [
         {
@@ -55,14 +55,13 @@ import { Token } from '../token.service';
             "min": 16,
             "max": 30
         }
-        ];
+    ];
 
-    constructor() {}
-  
-    getGroupOfAges(): Observable<any> {
-        console.log('==get Breed call==');
+    constructor() { }
+
+    getGroupOfAges(): Observable<any[]> {
         console.log(this.mockgroupAges)
         return of(this.mockgroupAges);
     }
 
-  }
+}

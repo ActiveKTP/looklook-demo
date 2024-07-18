@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Token } from '../token.service';
+//import { IOwnerModel } from '../owner-management/owner.service'
+import { DataTablesResponse, IPetModel } from '../pet-management/pet.interface'
 
 // export interface DataTablesResponse {
 //     draw?: number;
@@ -9,97 +11,63 @@ import { Token } from '../token.service';
 //     recordsFiltered: number;
 //     data: any[];
 // }
-
-export interface DataTablesResponse {
-  success: boolean;
-  pets: IPetModel[];
-  pageSize: number;
-  currentPage: number;
-  total: number;
-}
-
-export interface IPetModel {
-    _id: string; // ObjectId
-    type: string; // ObjectId
-    breedType: string; // String
-    breeds: string[]; // Array of ObjectId
-    photoUrl: string | null; // Null
-    name: string; // String
-    size: string | null; // Null
-    bloodGroup: string | null; // Null
-    weight: number | null; // Null
-    weightUnit: string | null; // Null
-    birthDate: string; // Date in ISO format
-    birthYear: number | null; // Null
-    adoptionDate: string | null; // Null
-    tags: string[]; // Array of ObjectId
-    about: string | null; // Null
-    colors: string[]; // Array (empty)
-    certifiedPedigreeUrl: string | null; // Null
-    petMedicals: any[]; // Array (empty)
-    owner: string; // ObjectId
-    active: boolean; // Boolean
-    deleted: boolean; // Boolean
-    deleteReason: {
-      reason: string | null; // Null
-      remark: string | null; // Null
-    };
-    groupOfAge: {
-      en: string; // String
-      th: string; // String
-    };
-    gender: {
-      en: string; // String
-      th: string; // String
-    };
-    createdAt: string; // Date in ISO format
-    updatedAt: string;
-  }
-
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class PetService {
 
-    //private apiUrl = 'https://preview.keenthemes.com/starterkit/metronic/laravel/api/v1/pets';
-    // private apiUrl = 'http://127.0.0.1:8000/api/v1/pets';
-    private apiUrl = 'https://looklook.pet/api/v1/pet';
+  //private apiUrl = 'https://preview.keenthemes.com/starterkit/metronic/laravel/api/v1/pets';
+  // private apiUrl = 'http://127.0.0.1:8000/api/v1/pets';
+  private apiUrl = 'https://looklook.pet/api/v1/pet';
 
-    private token = new Token();
+  private token = new Token();
 
-    constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    getPets(dataTablesParameters: any): Observable<DataTablesResponse> {
-      console.log('==getPets call==')
-      const url = `${this.apiUrl}?page=${dataTablesParameters.page}&limit=${dataTablesParameters.limit}&order=${dataTablesParameters.order}&orderBy=${dataTablesParameters.orderBy}`;
+  getPets(dataTablesParameters: any): Observable<DataTablesResponse> {
+    console.log('==getPets call==')
+    const url = `${this.apiUrl}?page=1&limit=10&order=createdAt&orderBy=desc`;
 
-      const headers = new HttpHeaders({
-          Authorization: `Bearer ${this.token.requestAuthToken()}`,
-      });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token.requestAuthToken()}`,
+    });
 
-      const options = { 
-          headers: headers
-      };
+    const options = {
+      headers: headers
+    };
 
-      return this.http.get<DataTablesResponse>(url, options);
-    }
+    return this.http.get<DataTablesResponse>(url, options);
+  }
 
-    getPet(id: string): Observable<IPetModel> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.get<IPetModel>(url);
-    }
+  getPet(id: string): Observable<IPetModel> {
 
-    createPet(pet: IPetModel): Observable<IPetModel> {
-        return this.http.post<IPetModel>(this.apiUrl, pet);
-    }
+    const url = `${this.apiUrl}/${id}`;
 
-    updatePet(id: string, pet: IPetModel): Observable<IPetModel> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.put<IPetModel>(url, pet);
-    }
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token.requestAuthToken()}`,
+    });
 
-    deletePet(id: string): Observable<void> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.delete<void>(url);
-    }
+    const options = {
+      headers: headers
+    };
+
+    const result = this.http.get<IPetModel>(url, options);
+    console.log('get pet result')
+    console.log(result)
+    return result;
+  }
+
+  createPet(pet: IPetModel): Observable<IPetModel> {
+    return this.http.post<IPetModel>(this.apiUrl, pet);
+  }
+
+  updatePet(id: string, pet: IPetModel): Observable<IPetModel> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<IPetModel>(url, pet);
+  }
+
+  deletePet(id: string): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(url);
+  }
 }

@@ -37,7 +37,7 @@
   <div class="card-body pt-0">
     <app-action-crud
       [datatableConfig]="datatableConfig"
-      route="/apps/pets"
+      route="/apps/pet-managements"
       (deleteEvent)="delete($event)"
       (editEvent)="edit($event)"
       (createEvent)="create()"
@@ -102,23 +102,62 @@
     <!--begin::Input group-->
     <div class="fv-row mb-7">
       <!--begin::Label-->
-      <label class="required fw-semibold fs-6 mb-2">Owner</label>
+      <label class="fw-semibold fs-6 mb-2">Avatar</label>
       <!--end::Label-->
       <!--begin::Input-->
       <input
         type="text"
         class="form-control form-control-solid"
-        name="owner"
-        [(ngModel)]="petModel.owner"
-        #owner="ngModel"
-        required
+        name="avatar"
+        [(ngModel)]="ownerModel.avatarUrl"
+        #avatar="ngModel"
         minlength="4"
       />
       <div
         *ngIf="myForm.submitted && myForm.invalid"
         class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
       >
-        <div *ngIf="name.errors?.['required']">owner is required</div>
+      </div>
+      <!--end::Input-->
+    </div>
+    <!--end::Input group-->
+
+    <!--begin::Input group-->
+    <div class="fv-row mb-7">
+      <!--begin::Label-->
+      <label class="fw-semibold fs-6 mb-2">DisplayName</label>
+      <!--end::Label-->
+      <!--begin::Input-->
+      <input 
+      type="text" 
+      class="form-control form-control-solid" 
+      name="displayName" 
+      [(ngModel)]="ownerModel.displayName" 
+      #displayName="ngModel"
+      minlength="4" />
+      <div *ngIf="myForm.submitted && myForm.invalid"
+        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+      </div>
+      <!--end::Input-->
+    </div>
+    <!--end::Input group-->
+
+    <!--begin::Input group-->
+    <div class="fv-row mb-7">
+      <!--begin::Label-->
+      <label class="required fw-semibold fs-6 mb-2">Email</label>
+      <!--end::Label-->
+      <!--begin::Input-->
+      <input 
+      type="text" 
+      class="form-control form-control-solid" 
+      name="email" 
+      [(ngModel)]="ownerModel.email"
+      #email="ngModel" 
+      required minlength="4" />
+      <div *ngIf="myForm.submitted && myForm.invalid"
+        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+        <div *ngIf="name.errors?.['required']">email is required</div>
       </div>
       <!--end::Input-->
     </div>
@@ -255,11 +294,9 @@
                     class="form-check-input me-3"
                     id="kt_modal_update_type_option_{{ type._id }}"
                     name="type"
-                    #type="ngModel"
-                    [(ngModel)]="petModel.type"
                     type="radio"
                     [value]="type.name.en"
-                    [checked]="last"
+                    [checked]="petModel.type?._id === type._id"
                     (change)="onPetTypeChange(type.name.en)"
                   />
                   <label
@@ -297,7 +334,7 @@
                     class="form-check-input me-3"
                     id="breed_{{ breed.name._id }}"
                     name="breed_{{ breed.name._id }}"
-                    [ngModel]="petModel.breeds.includes(breed.name._id)"
+                    [ngModel]="petModel.breeds?.includes(breed.name._id)"
                     type="checkbox"
                   />
                   <label
@@ -420,7 +457,6 @@
                     class="form-check-input me-3"
                     id="color_{{ color._id }}"
                     name="color_{{ color._id }}"
-                    [ngModel]="petModel.colors.includes(color._id)"
                     type="checkbox"
                     [value]="color._id"
                   />
@@ -460,7 +496,6 @@
                     class="form-check-input me-3"
                     id="tag_{{ tag._id }}"
                     name="tag_{{ tag._id }}"
-                    [ngModel]="petModel.tags.includes(tag._id)"
                     type="checkbox"
                     [value]="tag._id"
                   />

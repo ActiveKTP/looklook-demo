@@ -69,7 +69,7 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
     private renderer: Renderer2,
     private router: Router,
     private modalService: NgbModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -102,13 +102,19 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
       sortable: false,
       title: 'Actions',
       render: (data: any, type: any, full: any) => {
+
+        const viewButton = `
+          <button class="btn btn-icon btn-active-light-primary w-30px h-30px me-3" data-action="view" data-id="${full._id}">
+            <i class="ki-duotone ki-tablet-text-up fs-3"><span class="path1"></span><span class="path2"></span></i>
+          </button>`;
+
         const editButton = `
-          <button class="btn btn-icon btn-active-light-primary w-30px h-30px me-3" data-action="edit" data-id="${full.id}">
+          <button class="btn btn-icon btn-active-light-primary w-30px h-30px me-3" data-action="edit" data-id="${full._id}">
             <i class="ki-duotone ki-pencil fs-3"><span class="path1"></span><span class="path2"></span></i>
           </button>`;
 
         const deleteButton = `
-          <button class="btn btn-icon btn-active-light-primary w-30px h-30px" data-action="delete" data-id="${full.id}">
+          <button class="btn btn-icon btn-active-light-primary w-30px h-30px" data-action="delete" data-id="${full._id}">
             <i class="ki-duotone ki-trash fs-3">
               <span class="path1"></span><span class="path2"></span>
               <span class="path3"></span><span class="path4"></span><span class="path5"></span>
@@ -116,6 +122,8 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
           </button>`;
 
         const buttons = [];
+
+        buttons.push(viewButton);
 
         if (this.editEvent.observed) {
           buttons.push(editButton);
@@ -147,20 +155,28 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
             break;
 
           case 'create':
-            this.createEvent.emit(true);
-            this.modalRef = this.modalService.open(
-              this.modal,
-              this.modalConfig
-            );
+            this.router.navigate([`${this.route}/add`]); // Navigate to add route
             break;
 
           case 'edit':
-            this.editEvent.emit(String(this.idInAction));
-            this.modalRef = this.modalService.open(
-              this.modal,
-              this.modalConfig
-            );
+            this.router.navigate([`${this.route}/edit/${id}`]); // Navigate to edit route
             break;
+
+          // case 'create':
+          //   this.createEvent.emit(true);
+          //   this.modalRef = this.modalService.open(
+          //     this.modal,
+          //     this.modalConfig
+          //   );
+          //   break;
+
+          // case 'edit':
+          //   this.editEvent.emit(String(this.idInAction));
+          //   this.modalRef = this.modalService.open(
+          //     this.modal,
+          //     this.modalConfig
+          //   );
+          //   break;
 
           case 'delete':
             this.deleteSwal.fire().then((clicked) => {

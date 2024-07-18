@@ -2,15 +2,17 @@ import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, O
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable } from 'rxjs';
-import { DataTablesResponse, IPetModel, PetService } from 'src/app/_fake/services/pet-management/pet.service';
-import { PetTypesResponse, PetTypeService } from 'src/app/_fake/services/pet-management/type.service';
-import { PetColorsResponse, PetColorService } from 'src/app/_fake/services/pet-management/color.service';
-import { PetTagsResponse, PetTagService } from 'src/app/_fake/services/pet-management/tag.service';
+import { PetService } from 'src/app/_fake/services/pet-management/pet.service';
+import { PetTypeService } from 'src/app/_fake/services/pet-management/type.service';
+import { PetColorService } from 'src/app/_fake/services/pet-management/color.service';
+import { PetTagService } from 'src/app/_fake/services/pet-management/tag.service';
 import { PetBreedService } from 'src/app/_fake/services/pet-management/breed.service';
 import { PetGroupAgeService } from 'src/app/_fake/services/pet-management/groupAge.service';
 import { SweetAlertOptions } from 'sweetalert2';
 import moment from 'moment';
 import { IRoleModel, RoleService } from 'src/app/_fake/services/role.service';
+import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.service'
+import { DataTablesResponse, IPetModel, PetTypesResponse, PetColorsResponse, PetTagsResponse } from 'src/app/_fake/services/pet-management/pet.interface'
 import { Config } from 'datatables.net';
 
 @Component({
@@ -34,12 +36,13 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Single model
   aPet: Observable<IPetModel>;
-  petModel: IPetModel = { 
+
+  petModel: IPetModel = {
     _id: '',
-    type: '',
+    type: null,
     breedType: '',
-    breeds: [],
-    photoUrl:'',
+    breeds: null,
+    photoUrl: '',
     name: '',
     size: '',
     bloodGroup: '',
@@ -48,12 +51,12 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
     birthDate: '',
     birthYear: 0,
     adoptionDate: '',
-    tags: [],
+    tags: null,
     about: '',
-    colors: [],
+    colors: null,
     certifiedPedigreeUrl: '',
     petMedicals: [],
-    owner: '',
+    owner: null,
     active: false,
     deleted: false,
     deleteReason: {
@@ -70,7 +73,23 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     createdAt: '',
     updatedAt: '',
-   };
+  };
+
+  ownerModel: IOwnerModel = {
+    deleteReason: {
+      reason: '',
+      remark: '',
+    },
+    _id: '',
+    email: '',
+    displayName: '',
+    avatarUrl: '',
+    active: false,
+    suspended: false,
+    suspendRequest: '',
+    createdAt: '',
+    updatedAt: '',
+  }
 
   @ViewChild('noticeSwal')
   noticeSwal!: SwalComponent;
@@ -85,15 +104,15 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   petGroupAge$: Observable<any>;
 
   constructor(
-    private apiService: PetService, 
-    private roleService: RoleService, 
-    private petTypeService: PetTypeService, 
-    private petBreedService: PetBreedService, 
-    private petGroupAgeService: PetGroupAgeService, 
-    private petColorService: PetColorService, 
-    private petTagService: PetTagService, 
+    private apiService: PetService,
+    private roleService: RoleService,
+    private petTypeService: PetTypeService,
+    private petBreedService: PetBreedService,
+    private petGroupAgeService: PetGroupAgeService,
+    private petColorService: PetColorService,
+    private petTagService: PetTagService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngAfterViewInit(): void {
   }
@@ -104,7 +123,7 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.getPets(dataTablesParameters).subscribe((resp: DataTablesResponse) => {
           callback({
-            draw: dataTablesParameters.draw,
+            draw: resp.currentPage,
             recordsTotal: resp.total,
             recordsFiltered: resp.total,
             data: resp.pets
@@ -114,15 +133,15 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       columns: [
         {
-          title: 'Type', 
-          data: 'type', 
+          title: 'Type',
+          data: 'type',
           render: function (data, type, full) {
             const colorClasses = ['success', 'info', 'warning', 'danger'];
             //const randomColorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
 
             //const initials = data[0].toUpperCase();
-            if(full.type.name.en=='cat'){
-            var symbolLabel = `
+            if (full.type.name.en == 'cat') {
+              var symbolLabel = `
               <div class="symbol-label fs-3 bg-light-warning text-warning">
               ${full.type.name.en}
               </div>
@@ -136,7 +155,7 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
             }
 
             return `
-              <div class="symbol symbol-circle symbol-50px overflow-hidden me-3" data-action="view" data-id="${full.id}">
+              <div class="symbol symbol-circle symbol-50px overflow-hidden me-3" data-action="view" data-id="${full._id}">
                 <a href="javascript:;">
                   ${symbolLabel}
                 </a>
@@ -194,15 +213,15 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
         //   type: 'string',
         // },
         {
-          title: 'Gender', 
-          data: 'gender', 
+          title: 'Gender',
+          data: 'gender',
           render: (data, type, row) => {
             const genderName = row.gender?.en;
-            if(genderName=='male'){
+            if (genderName == 'male') {
               return `<i class="fa-solid fa-mars fs-2 text-primary"></i>`;
-            }else if(genderName=='female'){
+            } else if (genderName == 'female') {
               return `<i class="fa-solid fa-venus fs-2 text-info"></i>`;
-            }else{
+            } else {
               return `<i class="fa-solid fa-genderless fs-2"></i>`;
             }
           },
@@ -218,82 +237,95 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
           orderSequence: ['asc', 'desc'],
           type: 'string',
         },
+        {
+          title: 'Owner', data: 'owner', render: function (data, type, row) {
+            const breedName = row.owner?.email;
+            return breedName || '';
+          },
+          orderData: [2],
+          orderSequence: ['asc', 'desc'],
+          type: 'string',
+        }
       ],
       createdRow: function (row, data, dataIndex) {
-        //$('td:eq(0)', row).addClass('d-flex align-items-center');
+        $('td:eq(0)', row).addClass('d-flex align-items-center');
       },
     };
 
     //this.roles$ = this.roleService.getRoles();
 
     this.petTypes$ = this.petTypeService.getTypes();
-    console.log(this.petTypes$ );
+    console.log(this.petTypes$);
 
     // this.petBreed$ = this.petBreedService.getBreeds();
     // console.log(this.petBreed$);
 
     this.petGroupAge$ = this.petGroupAgeService.getGroupOfAges();
-    console.log(this.petGroupAge$ );
+    console.log(this.petGroupAge$);
 
     this.petColors$ = this.petColorService.getColors();
-    console.log(this.petColors$ );
+    console.log(this.petColors$);
 
     this.petTags$ = this.petTagService.getTags();
-    console.log(this.petTags$ );
+    console.log(this.petTags$);
 
   }
 
-  delete(id: string) {
-    this.apiService.deletePet(id).subscribe(() => {
+  delete(_id: string) {
+    this.apiService.deletePet(_id).subscribe(() => {
       this.reloadEvent.emit(true);
     });
   }
 
-  edit(id: string) {
-    this.aPet = this.apiService.getPet(id);
-    this.aPet.subscribe((user: IPetModel) => {
-      this.petModel = user;
+  edit(_id: string) {
+    console.log('event id ==>')
+    console.log(_id)
+    this.aPet = this.apiService.getPet(_id);
+    this.aPet.subscribe((pet: IPetModel) => {
+      console.log('this pet-list-component')
+      console.log(pet.type?._id)
+      this.petModel = pet;
     });
   }
 
   create() {
     this.petModel = {
       _id: '',
-    type: '',
-    breedType: '',
-    breeds: [],
-    photoUrl:'',
-    name: '',
-    size: '',
-    bloodGroup: '',
-    weight: 0,
-    weightUnit: '',
-    birthDate: '',
-    birthYear: 0,
-    adoptionDate: '',
-    tags: [],
-    about: '',
-    colors: [],
-    certifiedPedigreeUrl: '',
-    petMedicals: [],
-    owner: '',
-    active: false,
-    deleted: false,
-    deleteReason: {
-      reason: '',
-      remark: '',
-    },
-    groupOfAge: {
-      en: '',
-      th: '',
-    },
-    gender: {
-      en: '',
-      th: '',
-    },
-    createdAt: '',
-    updatedAt: '',
-     };
+      type: null,
+      breedType: '',
+      breeds: null,
+      photoUrl: '',
+      name: '',
+      size: '',
+      bloodGroup: '',
+      weight: 0,
+      weightUnit: '',
+      birthDate: '',
+      birthYear: 0,
+      adoptionDate: '',
+      tags: null,
+      about: '',
+      colors: null,
+      certifiedPedigreeUrl: '',
+      petMedicals: [],
+      owner: null,
+      active: false,
+      deleted: false,
+      deleteReason: {
+        reason: '',
+        remark: '',
+      },
+      groupOfAge: {
+        en: '',
+        th: '',
+      },
+      gender: {
+        en: '',
+        th: '',
+      },
+      createdAt: '',
+      updatedAt: '',
+    };
   }
 
   onSubmit(event: Event, myForm: NgForm) {
@@ -306,9 +338,9 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
     const successAlert: SweetAlertOptions = {
       icon: 'success',
       title: 'Success!',
-      text: this.petModel._id != '' 
-      ? 'User updated successfully!' 
-      : 'User created successfully!',
+      text: this.petModel._id != ''
+        ? 'User updated successfully!'
+        : 'User created successfully!',
     };
     const errorAlert: SweetAlertOptions = {
       icon: 'error',
@@ -322,36 +354,36 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const updateFn = () => {
       this.apiService
-      .updatePet(this.petModel._id, this.petModel)
-      .subscribe({
-        next: () => {
-          this.showAlert(successAlert);
-          this.reloadEvent.emit(true);
-        },
-        error: (error) => {
-          errorAlert.text = this.extractText(error.error);
-          this.showAlert(errorAlert);
-          this.isLoading = false;
-        },
-        complete: completeFn,
-      });
+        .updatePet(this.petModel._id, this.petModel)
+        .subscribe({
+          next: () => {
+            this.showAlert(successAlert);
+            this.reloadEvent.emit(true);
+          },
+          error: (error) => {
+            errorAlert.text = this.extractText(error.error);
+            this.showAlert(errorAlert);
+            this.isLoading = false;
+          },
+          complete: completeFn,
+        });
     };
 
     const createFn = () => {
       this.apiService
-      .createPet(this.petModel)
-      .subscribe({
-        next: () => {
-          this.showAlert(successAlert);
-          this.reloadEvent.emit(true);
-        },
-        error: (error) => {
-          errorAlert.text = this.extractText(error.error);
-          this.showAlert(errorAlert);
-          this.isLoading = false;
-        },
-        complete: completeFn,
-      });
+        .createPet(this.petModel)
+        .subscribe({
+          next: () => {
+            this.showAlert(successAlert);
+            this.reloadEvent.emit(true);
+          },
+          error: (error) => {
+            errorAlert.text = this.extractText(error.error);
+            this.showAlert(errorAlert);
+            this.isLoading = false;
+          },
+          complete: completeFn,
+        });
     };
 
     if (this.petModel._id != '') {
@@ -408,9 +440,9 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectedPetType: string;
-  
+
   onPetTypeChange(petType: string) {
-    console.log('petType==',petType)
+    console.log('petType==', petType)
     this.selectedPetType = petType; // Set selected pet type
     this.petBreed$ = this.petBreedService.getBreedsType(petType); // Load breeds for the selected type
   }
