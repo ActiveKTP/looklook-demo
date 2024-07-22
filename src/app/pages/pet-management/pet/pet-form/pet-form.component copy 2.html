@@ -23,7 +23,8 @@
                     <div class="col-lg-8">
                         <select class="form-select form-select-lg form-select-solid" formControlName="type"
                             (change)="onPetTypeChange($event)">
-                            <option *ngFor="let type of petTypes" [value]="type._id">
+                            <option *ngFor="let type of petTypes" [value]="type._id"
+                                [selected]="type._id === petForm.get('type')?.value">
                                 {{ type.name.en }}
                             </option>
                         </select>
@@ -35,7 +36,8 @@
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Breed Type</label>
                     <div class="col-lg-8">
                         <select class="form-select form-select-lg form-select-solid" formControlName="breedType">
-                            <option *ngFor="let breedType of petBreedtype" [value]="breedType.name">
+                            <option *ngFor="let breedType of petBreedtype" [value]="breedType.name"
+                                [selected]="breedType.name === petForm.get('breedType')?.value">
                                 {{ breedType.name }}
                             </option>
                         </select>
@@ -43,17 +45,43 @@
                 </div>
 
                 <!-- Breeds -->
+                <!-- <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Breeds</label>
+                    <div class="col-lg-8">
+                        <div formArrayName="breeds" class="mb-3">
+                            <div *ngFor="let breed of petForm.get('breeds')?.value; let i = index" [formGroupName]="i">
+                                <div formGroupName="name" class="mb-3">
+                                    <input type="text" class="form-control form-control-lg form-control-solid" formControlName="en"
+                                        placeholder="Breed name" />
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-light-primary" (click)="addBreed()">+</button>
+                        <button type="button" class="btn btn-light-danger ms-2" (click)="removeBreedLast()">-</button>
+                    </div>
+                </div> -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Breeds</label>
                     <div class="col-lg-8">
                         <div formArrayName="breeds" class="mb-3">
-                            <div *ngFor="let breed of breeds.controls; let i = index" [formGroupName]="i">
+                            <div *ngFor="let breed of petForm.get('breeds')?.value; let i = index" [formGroupName]="i">
+                                <!-- <div formGroupName="name" class="mb-3"> -->
                                 <select class="form-control form-control-lg form-control-solid mb-3"
                                     formControlName="_id">
                                     <option *ngFor="let breedOption of petBreeds" [value]="breedOption._id">
                                         {{ breedOption.name.en }}
                                     </option>
                                 </select>
+                                <!-- <select class="form-control form-control-lg form-control-solid" 
+                                    (change)="onBreedChange($event, i)"
+                                    formControlName="en"
+                                    >
+                                        <option *ngFor="let breedOption of petBreeds" [ngValue]="breedOption">
+                                            {{ breedOption.name.en }}
+                                        </option>
+                                    </select> -->
+                                <!-- </div> -->
+
                             </div>
                         </div>
                         <button type="button" class="btn btn-light-primary" (click)="addBreed()">+</button>
@@ -66,7 +94,8 @@
                     <label class="col-lg-4 col-form-label fw-bold fs-6 required">Gender</label>
                     <div class="col-lg-8">
                         <select class="form-select form-select-lg form-select-solid" formControlName="gender">
-                            <option *ngFor="let gender of petGenders" [value]="gender.en">
+                            <option *ngFor="let gender of petGenders" [value]="gender.en"
+                                [selected]="gender.en === petForm.get('gender')?.value">
                                 {{ gender.en }}
                             </option>
                         </select>
@@ -78,7 +107,8 @@
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Group Of Age</label>
                     <div class="col-lg-8">
                         <select class="form-select form-select-lg form-select-solid" formControlName="groupOfAge">
-                            <option *ngFor="let groupAge of petGroupAges" [value]="groupAge.name.en">
+                            <option *ngFor="let groupAge of petGroupAges" [value]="groupAge.name.en"
+                                [selected]="groupAge.name.en === petForm.get('groupOfAge')?.value">
                                 {{ groupAge.name.en }}
                             </option>
                         </select>
@@ -110,8 +140,28 @@
                         <input type="number" class="form-control form-control-lg form-control-solid"
                             formControlName="weight" placeholder="Weight" />
                     </div>
+                    <!-- <div class="col-lg-4">
+                        <input type="text" class="form-control form-control-lg form-control-solid" formControlName="weightUnit"
+                            placeholder="Unit" />
+                    </div> -->
                 </div>
 
+                <!-- Tags -->
+                <!-- <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Tags</label>
+                    <div class="col-lg-8">
+                        <div formArrayName="tags" *ngFor="let tag of petForm.get('tags')?.value; let i = index;">
+                            <div [formGroupName]="i" class="mb-2">
+                                <input type="text" formControlName="name" placeholder="Tag name (en)"
+                                    class="form-control mb-1" />
+                                <input type="text" formControlName="_id" placeholder="Tag ID"
+                                    class="form-control mb-1" />
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-light-primary" (click)="addTag()">+</button>
+                        <button type="button" class="btn btn-light-danger ms-2" (click)="removeaddTagLast()">-</button>
+                    </div>
+                </div> -->
                 <!-- Tags Input -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Tags</label>
@@ -144,19 +194,30 @@
                             placeholder="About the pet"></textarea>
                     </div>
                 </div>
-
                 <!-- Colors -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Colors</label>
                     <div class="col-lg-8">
+                        <!-- <div formArrayName="colors"
+                            *ngFor="let color of petForm.get('colors')?.value; let i = index;">
+                            <div [formGroupName]="i" class="mb-2">
+                                <input type="text" formControlName="name" placeholder="Color name (en)"
+                                    class="form-control mb-1" />
+                                <input type="text" formControlName="_id" placeholder="Color ID"
+                                    class="form-control mb-1" />
+                            </div>
+                        </div> -->
                         <div formArrayName="colors" class="mb-3">
-                            <div *ngFor="let color of colors.controls; let i = index" [formGroupName]="i">
+                            <div *ngFor="let color of petForm.get('colors')?.value; let i = index" [formGroupName]="i">
+                                <!-- <div formGroupName="name" class="mb-3"> -->
                                 <select class="form-control form-control-lg form-control-solid mb-3"
                                     formControlName="_id">
                                     <option *ngFor="let colorOption of petColors" [value]="colorOption._id">
                                         {{ colorOption.name.en }}
                                     </option>
                                 </select>
+                                <!-- </div> -->
+
                             </div>
                         </div>
                         <button type="button" class="btn btn-light-primary" (click)="addColor()">+</button>
@@ -164,7 +225,6 @@
                             (click)="removeaddColorLast()">-</button>
                     </div>
                 </div>
-
                 <!-- Certified Pedigree URL -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Certified Pedigree URL</label>
@@ -173,7 +233,6 @@
                             formControlName="certifiedPedigreeUrl" placeholder="Certified Pedigree URL" />
                     </div>
                 </div>
-
                 <!-- Owner -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Owner</label>
@@ -182,7 +241,6 @@
                             formControlName="owner" placeholder="Owner" />
                     </div>
                 </div>
-
                 <!-- Active -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Active</label>

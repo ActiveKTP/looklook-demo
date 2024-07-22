@@ -51,18 +51,19 @@ export interface IPetModel {
     bloodGroup: string | null; // Null
     weight: number | null; // Null
     weightUnit: string | null; // Null
-    birthDate: string; // Date in ISO format
+    birthDate: string| null; // Date in ISO format
     birthYear: number | null; // Null
     adoptionDate: string | null; // Null
-    tags: [
-        {
-            name: {
-                en: string,
-                th: string
-            },
-            _id: string
-        }
-    ] | null; // Array of ObjectId
+    // tags: [
+    //     {
+    //         name: {
+    //             en: string,
+    //             th: string
+    //         },
+    //         _id: string
+    //     }
+    // ] | null; // Array of ObjectId
+    tags:PetTag[] | null;
     about: string | null; // Null
     colors: [
         {
@@ -100,12 +101,12 @@ export interface PetColorName {
 export interface PetColor {
     _id: string;
     name: PetColorName;
-    code: string;
-    active: boolean;
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+    //code: string;
+    // active: boolean;
+    // createdAt: string;
+    // createdBy: string;
+    // updatedAt: string;
+    // updatedBy: string;
 }
 
 export interface PetColorsResponse {

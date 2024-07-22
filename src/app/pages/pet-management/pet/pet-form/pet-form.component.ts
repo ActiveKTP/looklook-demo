@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PetService } from 'src/app/_fake/services/pet-management/pet.service';
@@ -38,6 +38,7 @@ export class PetFormComponent implements OnInit {
     matchingTags: PetTag[] = [];
     selectedTags: PetTag[] = [];
 
+
     constructor(
         private fb: FormBuilder,
         private petService: PetService,
@@ -50,11 +51,12 @@ export class PetFormComponent implements OnInit {
         private ownerService: OwnerService,
         private route: ActivatedRoute,
         private router: Router,
-        private apiService: AuthService
+        private apiService: AuthService,
+        private changeDetector: ChangeDetectorRef,
     ) {
         this.currentUser = this.apiService.currentUserValue;
         this.petForm = this.fb.group({
-            type: [null, Validators.required], // Initialize type as null
+            type: [null], // Initialize type as null
             breedType: [''],
             breeds: this.fb.array([]),
             photoUrl: [null],
@@ -62,7 +64,7 @@ export class PetFormComponent implements OnInit {
             weight: [null],
             //weightUnit: ["null"],
             birthDate: [''],
-            adoptionDate: [null],
+            adoptionDate: [''],
             tags: this.fb.array([]),
             about: [null],
             colors: this.fb.array([]),
@@ -74,87 +76,280 @@ export class PetFormComponent implements OnInit {
         });
     }
 
-    ngOnInit(): void {
+    // ngOnInit(): void {
 
-        //get pet
+    //     //get pet
+    //     this.petId = this.route.snapshot.paramMap.get('id');
+    //     if (this.petId) {
+    //         this.petService.getPet(this.petId).subscribe((pet: IPetModel) => {
+    //             console.log('==Pet==');
+    //             console.log(pet);
+    //             this.petForm.patchValue(pet);
+    //              if (pet.breeds) this.setBreeds(pet.breeds);
+    //             // // Set the correct value for the type dropdown
+    //             this.petForm.get('type')?.setValue(pet.type?._id);
+    //             this.petForm.get('gender')?.setValue(pet.gender?.en);
+    //             this.petForm.get('groupOfAge')?.setValue(pet.groupOfAge?.en);
+    //             this.petForm.get('owner')?.setValue(pet.owner?.email);
+
+    //             console.log(pet.type?._id)
+    //             if (pet.type?._id) {
+    //                 this.petBreedService.getBreedsType(pet.type._id).subscribe((breeds: any[]) => {
+    //                     console.log('call pet breed')
+    //                     console.log(breeds)
+    //                     this.petBreeds = breeds;
+    //                 });
+    //             }
+    //         });
+    //     }
+
+    //     // Fetch pet types from service
+    //     this.petTypeService.getTypes().subscribe((response) => {
+    //         if (response.success) {
+    //             console.log('=pet tupe=', response.petTypes)
+    //             this.petTypes = response.petTypes;
+    //         }
+    //     });
+
+    //     //get breed 
+    //     // this.petBreedService.getBreedsType(this.petTypes.name).subscribe((genders: IPetGender[]) => {
+    //     //     this.petBreeds = genders;
+    //     // });
+
+    //     // Fetch Gender
+    //     this.petMockService.getGenders().subscribe((genders: IPetGender[]) => {
+    //         this.petGenders = genders;
+    //     });
+
+    //     // Fetch Breeds Type
+    //     this.petMockService.getBreedTypes().subscribe((breedtypes: any[]) => {
+    //         this.petBreedtype = breedtypes;
+    //     });
+
+    //     //Fetch Group Age 
+    //     this.petGroupAgeService.getGroupOfAges().subscribe((groupAges: any[]) => {
+    //         console.log('=get groupAges=', groupAges)
+    //         this.petGroupAges = groupAges;
+    //     });
+
+    //     //Fetch Color
+    //     this.petColorService.getColors().subscribe((colors: PetColorsResponse) => {
+    //         console.log('call pet color')
+    //         console.log(colors)
+    //         this.petColors = colors.colors;
+    //     });
+
+    //     //Fetch Tag
+    //     this.petTagService.getTags().subscribe((tags: PetTagsResponse) => {
+    //         console.log('call pet tags')
+    //         console.log(tags)
+    //         this.petTags = tags.tags;
+    //     });
+
+    //     //Fetch Owner
+    //     // this.ownerService.getColors().subscribe((colors: PetColorsResponse) => {
+    //     //     console.log('call pet color')
+    //     //     console.log(colors)
+    //     //     this.petColors = colors.colors;
+    //     // });
+
+    //     console.log('check current user')
+    //     console.log(this.currentUser)
+
+    // }
+
+    async ngOnInit(): Promise<void> {
+        // Fetch pet data if petId is available
         this.petId = this.route.snapshot.paramMap.get('id');
-        if (this.petId) {
-            this.petService.getPet(this.petId).subscribe((pet: IPetModel) => {
-                console.log('==Pet==');
-                console.log(pet);
-                this.petForm.patchValue(pet);
-                if (pet.breeds) this.setBreeds(pet.breeds);
-                // Set the correct value for the type dropdown
-                this.petForm.get('type')?.setValue(pet.type?._id);
-                this.petForm.get('gender')?.setValue(pet.gender?.en);
-                this.petForm.get('groupOfAge')?.setValue(pet.groupOfAge?.en);
-                //this.petForm.get('breeds')?.setValue(pet.breeds);
-                this.petForm.get('owner')?.setValue(pet.owner?.email);
 
-                console.log(pet.type?._id)
-                if (pet.type?._id) {
-                    this.petBreedService.getBreedsType(pet.type._id).subscribe((breeds: any[]) => {
-                        console.log('call pet breed')
-                        console.log(breeds)
-                        this.petBreeds = breeds;
+        if (this.petId) {
+            this.petService.getPet(this.petId).subscribe({
+                next: (pet: IPetModel) => {
+                    console.log('==Pet==', pet);
+                    this.petForm.patchValue({
+                        ...pet,
+                        type: pet.type?._id,
+                        gender: pet.gender?.en,
+                        groupOfAge: pet.groupOfAge?.en,
+                        birthDate: this.formatDate_display(pet.birthDate),
+                        adoptionDate: this.formatDate_display(pet.adoptionDate),
+                        owner: pet.owner?.email
                     });
-                }
+
+                    if (pet.breeds) this.setBreeds(pet.breeds);
+
+                    if (pet.type?._id) {
+                        this.petBreedService.getBreedsType(pet.type._id).subscribe({
+                            next: (breeds: any[]) => {
+                                console.log('call pet breed', breeds);
+                                this.petBreeds = breeds;
+                            },
+                            error: err => console.error('Error fetching pet breeds', err)
+                        });
+                    }
+
+                    if (pet.colors) this.setColors(pet.colors);
+
+                    if (pet.tags) this.setTags(pet.tags);
+                    if (pet.tags) this.selectedTags = pet.tags;
+
+                },
+                error: err => console.error('Error fetching pet', err)
             });
         }
 
-        // Fetch pet types from service
-        this.petTypeService.getTypes().subscribe((response) => {
-            if (response.success) {
-                console.log('=pet tupe=', response.petTypes)
-                this.petTypes = response.petTypes;
-            }
+        // Fetch additional data needed for the form
+        await Promise.all([
+            this.fetchPetTypes(),
+            this.fetchGenders(),
+            this.fetchBreedTypes(),
+            this.fetchGroupAges(),
+            this.fetchColors(),
+            this.fetchTags()
+        ]);
+
+        console.log('check current user', this.currentUser);
+        this.changeDetector.detectChanges();
+    }
+
+    private formatDate_display(dateString: string | null): string | null {
+        if (!dateString) return null;
+        // console.log('dateString', dateString)
+        // const date = new Date(dateString);
+        // console.log('date=>', date)
+        // const year = date.getFullYear();
+        // const month = String(date.getMonth() + 1).padStart(2, '0');
+        // const day = String(date.getDate()).padStart(2, '0');
+        // console.log(`${year}-${month}-${day}`)
+        // return `${year}-${month}-${day}`;
+        return dateString.split('T')[0];
+    }
+
+    private fetchPetTypes(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            this.petTypeService.getTypes().subscribe({
+                next: (response) => {
+                    if (response.success) {
+                        this.petTypes = response.petTypes;
+                        resolve(this.petTypes);
+                    } else {
+                        reject('Failed to fetch pet types');
+                    }
+                },
+                error: reject
+            });
         });
+    }
 
-        //get breed 
-        // this.petBreedService.getBreedsType(this.petTypes.name).subscribe((genders: IPetGender[]) => {
-        //     this.petBreeds = genders;
-        // });
-
-        // Fetch Gender
-        this.petMockService.getGenders().subscribe((genders: IPetGender[]) => {
-            this.petGenders = genders;
+    // private fetchGenders(): void {
+    //     this.petMockService.getGenders().subscribe({
+    //         next: (genders: IPetGender[]) => {
+    //             this.petGenders = genders;
+    //         },
+    //         error: err => console.error('Error fetching genders', err)
+    //     });
+    // }
+    private fetchGenders(): Promise<IPetGender[]> {
+        return new Promise((resolve, reject) => {
+            this.petMockService.getGenders().subscribe({
+                next: (genders: IPetGender[]) => {
+                    this.petGenders = genders;
+                    resolve(this.petGenders);
+                },
+                error: reject
+            });
         });
+    }
 
-        // Fetch Breeds Type
-        this.petMockService.getBreedTypes().subscribe((breedtypes: any[]) => {
-            this.petBreedtype = breedtypes;
+    // private fetchBreedTypes(): void {
+    //     this.petMockService.getBreedTypes().subscribe({
+    //         next: (breedtypes: any[]) => {
+    //             this.petBreedtype = breedtypes;
+    //         },
+    //         error: err => console.error('Error fetching breed types', err)
+    //     });
+    // }
+    private fetchBreedTypes(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            this.petMockService.getBreedTypes().subscribe({
+                next: (breedtypes: any[]) => {
+                    this.petBreedtype = breedtypes;
+                    resolve(this.petBreedtype);
+                },
+                error: reject
+            });
         });
+    }
 
-        //Fetch Group Age 
-        this.petGroupAgeService.getGroupOfAges().subscribe((groupAges: any[]) => {
-            console.log('=get groupAges=', groupAges)
-            this.petGroupAges = groupAges;
+    // private fetchGroupAges(): void {
+    //     this.petGroupAgeService.getGroupOfAges().subscribe({
+    //         next: (groupAges: any[]) => {
+    //             console.log('=get groupAges=', groupAges);
+    //             this.petGroupAges = groupAges;
+    //         },
+    //         error: err => console.error('Error fetching group ages', err)
+    //     });
+    // }
+    private fetchGroupAges(): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            this.petGroupAgeService.getGroupOfAges().subscribe({
+                next: (groupAges: any[]) => {
+                    this.petGroupAges = groupAges;
+                    resolve(this.petGroupAges);
+                },
+                error: reject
+            });
         });
+    }
 
-        //Fetch Color
-        this.petColorService.getColors().subscribe((colors: PetColorsResponse) => {
-            console.log('call pet color')
-            console.log(colors)
-            this.petColors = colors.colors;
+    // private fetchColors(): void {
+    //     this.petColorService.getColors().subscribe({
+    //         next: (colors: PetColorsResponse) => {
+    //             console.log('call pet color', colors);
+    //             this.petColors = colors.colors;
+    //         },
+    //         error: err => console.error('Error fetching colors', err)
+    //     });
+    // }
+    private fetchColors(): Promise<PetColorsResponse> {
+        return new Promise((resolve, reject) => {
+            this.petColorService.getColors().subscribe({
+                next: (colors: PetColorsResponse) => {
+                    console.log('call pet color', colors);
+                    this.petColors = colors.colors;
+                    resolve(colors); // Resolve the Promise with the fetched colors
+                },
+                error: err => {
+                    console.error('Error fetching colors', err);
+                    reject(err); // Reject the Promise in case of an error
+                }
+            });
         });
+    }
 
-        //Fetch Tag
-        this.petTagService.getTags().subscribe((tags: PetTagsResponse) => {
-            console.log('call pet tags')
-            console.log(tags)
-            this.petTags = tags.tags;
+    // private fetchTags(): void {
+    //     this.petTagService.getTags().subscribe({
+    //         next: (tags: PetTagsResponse) => {
+    //             console.log('call pet tags', tags);
+    //             this.petTags = tags.tags;
+    //         },
+    //         error: err => console.error('Error fetching tags', err)
+    //     });
+    // }
+    private fetchTags(): Promise<PetTagsResponse> {
+        return new Promise((resolve, reject) => {
+            this.petTagService.getTags().subscribe({
+                next: (tags: PetTagsResponse) => {
+                    console.log('call pet tags', tags);
+                    this.petTags = tags.tags;
+                    resolve(tags); // Resolve the Promise with the fetched colors
+                },
+                error: err => {
+                    console.error('Error fetching tags', err);
+                    reject(err); // Reject the Promise in case of an error
+                }
+            });
         });
-
-        //Fetch Owner
-        // this.ownerService.getColors().subscribe((colors: PetColorsResponse) => {
-        //     console.log('call pet color')
-        //     console.log(colors)
-        //     this.petColors = colors.colors;
-        // });
-
-        console.log('check current user')
-        console.log(this.currentUser)
-
     }
 
     // breed
@@ -162,17 +357,38 @@ export class PetFormComponent implements OnInit {
         return this.petForm.get('breeds') as FormArray;
     }
 
+    // setBreeds(breeds: IPetBreed[]): void {
+    //     console.log('set breed call')
+    //     const breedsFormArray = this.petForm.get('breeds') as FormArray;
+    //     breeds.forEach(breed => {
+    //         breedsFormArray.push(this.fb.group({
+    //             name: this.fb.group({
+    //                 en: [breed.name.en],
+    //                 th: [breed.name.th]
+    //             }),
+    //             _id: [breed._id]
+    //         }));
+    //     });
+    // }
+
     setBreeds(breeds: IPetBreed[]): void {
-        console.log('set breed call')
+        console.log('set breed call');
         const breedsFormArray = this.petForm.get('breeds') as FormArray;
+
+        // Clear existing form array controls to avoid duplicate entries
+        while (breedsFormArray.length) {
+            breedsFormArray.removeAt(0);
+        }
+
         breeds.forEach(breed => {
-            breedsFormArray.push(this.fb.group({
+            const breedFormGroup = this.fb.group({
                 name: this.fb.group({
-                    en: [breed.name.en],
-                    th: [breed.name.th]
+                    en: [breed.name.en], // Added Validators if needed
+                    th: [breed.name.th]  // Added Validators if needed
                 }),
                 _id: [breed._id]
-            }));
+            });
+            breedsFormArray.push(breedFormGroup);
         });
     }
 
@@ -285,8 +501,37 @@ export class PetFormComponent implements OnInit {
             this.tags.removeAt(this.tags.length - 1);
         }
     }
+
+    setTags(tags: PetTag[]): void {
+        const tagsFormArray = this.petForm.get('tags') as FormArray;
+
+        // Clear existing form array controls to avoid duplicate entries
+        while (tagsFormArray.length) {
+            tagsFormArray.removeAt(0);
+        }
+
+        tags.forEach(tag => {
+            console.log('tag', tag.name.en)
+            const tagFormGroup = this.fb.group({
+                name: this.fb.group({
+                    en: [tag.name.en], // Added Validators if needed
+                    th: [tag.name.th]  // Added Validators if needed
+                }),
+                _id: [tag._id],
+                type: {
+                    name: {
+                        en: [tag.type.name.en],
+                        th: [tag.type.name.th]
+                    },
+                    _id: [tag.type._id]
+                }
+            });
+            tagsFormArray.push(tagFormGroup);
+        });
+    }
     // End Tag
 
+    //Color
     get colors() {
         return this.petForm.get('colors') as FormArray;
     }
@@ -307,6 +552,28 @@ export class PetFormComponent implements OnInit {
             this.colors.removeAt(this.colors.length - 1);
         }
     }
+
+    setColors(colors: PetColor[]): void {
+        const colorsFormArray = this.petForm.get('colors') as FormArray;
+
+        // Clear existing form array controls to avoid duplicate entries
+        while (colorsFormArray.length) {
+            colorsFormArray.removeAt(0);
+        }
+
+        colors.forEach(color => {
+            const colorFormGroup = this.fb.group({
+                name: this.fb.group({
+                    en: [color.name.en], // Added Validators if needed
+                    th: [color.name.th]  // Added Validators if needed
+                }),
+                _id: [color._id]
+            });
+            colorsFormArray.push(colorFormGroup);
+        });
+    }
+
+    // End Color
 
     onSubmit(): void {
         console.log('handel submit form')
@@ -376,7 +643,7 @@ export class PetFormComponent implements OnInit {
             typeId: formValue.type, // Rename 
             //breedIds: formValue.breeds // Rename 
             birthDateType: "year",
-            //weightUnit: true,
+            weightUnit: "kg",
 
         };
 

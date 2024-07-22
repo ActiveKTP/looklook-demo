@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, TemplateRef, ViewChild, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable } from 'rxjs';
@@ -14,7 +14,7 @@ import { IRoleModel, RoleService } from 'src/app/_fake/services/role.service';
 import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.service'
 import { DataTablesResponse, IPetModel, PetTypesResponse, PetColorsResponse, PetTagsResponse } from 'src/app/_fake/services/pet-management/pet.interface'
 import { Config } from 'datatables.net';
-
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-pet-listing',
   templateUrl: './pet-listing.component.html',
@@ -32,7 +32,8 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   datatableConfig: Config = {};
 
   // Reload emitter inside datatable
-  reloadEvent: EventEmitter<boolean> = new EventEmitter();
+  //reloadEvent: EventEmitter<boolean> = new EventEmitter();
+  @Output() reloadEvent = new EventEmitter<boolean>();
 
   // Single model
   aPet: Observable<IPetModel>;
@@ -111,7 +112,8 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
     private petGroupAgeService: PetGroupAgeService,
     private petColorService: PetColorService,
     private petTagService: PetTagService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router,
   ) { }
 
   ngAfterViewInit(): void {
@@ -272,9 +274,18 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete(_id: string) {
-    this.apiService.deletePet(_id).subscribe(() => {
-      this.reloadEvent.emit(true);
-    });
+    console.log('=delete=')
+    console.log(_id)
+    this.apiService.deletePet(_id).subscribe({
+      next: () => {
+          console.log('delete complete')
+          this.reloadEvent.emit(true);
+      },
+      error: (err) => {
+          console.error('Error deleting pet', err);
+          alert('An error occurred while deleting the pet.');
+      }
+  });
   }
 
   edit(_id: string) {
