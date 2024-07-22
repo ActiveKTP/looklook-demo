@@ -58,12 +58,27 @@ export class PetService {
   }
 
   createPet(pet: IPetModel): Observable<IPetModel> {
-    return this.http.post<IPetModel>(this.apiUrl, pet);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token.requestAuthToken()}`,
+    });
+
+    const options = {
+      headers: headers
+    };
+
+    return this.http.post<any>(this.apiUrl, pet, options);
   }
 
   updatePet(id: string, pet: IPetModel): Observable<IPetModel> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.put<IPetModel>(url, pet);
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token.requestAuthToken()}`,
+    });
+
+    const options = {
+      headers: headers
+    };
+    return this.http.put<IPetModel>(url, pet, options);
   }
 
   deletePet(id: string): Observable<void> {

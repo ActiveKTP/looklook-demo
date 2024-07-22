@@ -16,22 +16,30 @@
                             formControlName="name" placeholder="Pet name" />
                     </div>
                 </div>
+
                 <!-- Type -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label required fw-bold fs-6">Type</label>
                     <div class="col-lg-8">
-                        <select class="form-select form-select-lg form-select-solid" formControlName="type">
-                            <option *ngFor="let type of petTypes" [value]="type._id" [selected]="type._id === petForm.get('type')?.value">
+                        <select 
+                        class="form-select form-select-lg form-select-solid" 
+                        formControlName="type"
+                        (change)="onPetTypeChange($event)"
+                        >
+                            <option *ngFor="let type of petTypes" 
+                            [value]="type._id" 
+                            [selected]="type._id === petForm.get('type')?.value">
                                 {{ type.name.en }}
                             </option>
                         </select>
                     </div>
                 </div>
+
                 <!-- Breed Type -->
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Breed Type</label>
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Breed Type</label>
                     <div class="col-lg-8">
-                        <select class="form-select form-select-lg form-select-solid" formControlName="gender">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="breedType">
                             <option *ngFor="let breedType of petBreedtype" [value]="breedType.name"
                                 [selected]="breedType.name === petForm.get('breedType')?.value">
                                 {{ breedType.name }}
@@ -39,6 +47,7 @@
                         </select>
                     </div>
                 </div>
+                
                 <!-- Breeds -->
                 <!-- <div class="row mb-6">
                     <label class="col-lg-4 col-form-label required fw-bold fs-6">Breeds</label>
@@ -56,18 +65,26 @@
                     </div>
                 </div> -->
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Breeds</label>
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Breeds</label>
                     <div class="col-lg-8">
                         <div formArrayName="breeds" class="mb-3">
                             <div *ngFor="let breed of petForm.get('breeds')?.value; let i = index" [formGroupName]="i">
-                                <div formGroupName="name" class="mb-3">
-                                    <select class="form-control form-control-lg form-control-solid" formControlName="en">
-                                        <option *ngFor="let breedOption of petBreeds" [value]="breedOption.name.en"
+                                <!-- <div formGroupName="name" class="mb-3"> -->
+                                    <select class="form-control form-control-lg form-control-solid mb-3" formControlName="_id">
+                                        <option *ngFor="let breedOption of petBreeds" [value]="breedOption._id"
                                            >
                                             {{ breedOption.name.en }}
                                         </option>
                                     </select>
-                                </div>
+                                    <!-- <select class="form-control form-control-lg form-control-solid" 
+                                    (change)="onBreedChange($event, i)"
+                                    formControlName="en"
+                                    >
+                                        <option *ngFor="let breedOption of petBreeds" [ngValue]="breedOption">
+                                            {{ breedOption.name.en }}
+                                        </option>
+                                    </select> -->
+                                <!-- </div> -->
                                 
                             </div>
                         </div>
@@ -78,35 +95,39 @@
 
                 <!-- Gender -->
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Gender</label>
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Gender</label>
                     <div class="col-lg-8">
                         <select class="form-select form-select-lg form-select-solid" formControlName="gender">
-                            <option *ngFor="let gender of petGenders" [value]="gender.en" [selected]="gender.en === petForm.get('gender')?.value">
+                            <option *ngFor="let gender of petGenders" [value]="gender.en" 
+                            [selected]="gender.en === petForm.get('gender')?.value">
                                 {{ gender.en }}
                             </option>
                         </select>
                     </div>
                 </div>
-                <!-- Weight -->
+
+                <!-- Group Of Age -->
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Weight</label>
-                    <div class="col-lg-4">
-                        <input type="number" class="form-control form-control-lg form-control-solid"
-                            formControlName="weight" placeholder="Weight" />
-                    </div>
-                    <div class="col-lg-4">
-                        <input type="text" class="form-control form-control-lg form-control-solid"
-                            formControlName="weightUnit" placeholder="Unit" />
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Group Of Age</label>
+                    <div class="col-lg-8">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="groupOfAge">
+                            <option *ngFor="let groupAge of petGroupAges" [value]="groupAge.name.en"
+                                [selected]="groupAge.name.en === petForm.get('groupOfAge')?.value">
+                                {{ groupAge.name.en }}
+                            </option>
+                        </select>
                     </div>
                 </div>
+
                 <!-- Birth Date -->
                 <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Birth Date</label>
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Birth Date</label>
                     <div class="col-lg-8">
                         <input type="date" class="form-control form-control-lg form-control-solid"
                             formControlName="birthDate" />
                     </div>
                 </div>
+
                 <!-- Adoption Date -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Adoption Date</label>
@@ -115,8 +136,22 @@
                             formControlName="adoptionDate" />
                     </div>
                 </div>
-                <!-- Tags -->
+
+                <!-- Weight -->
                 <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Weight</label>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-lg form-control-solid" formControlName="weight"
+                            placeholder="Weight" />
+                    </div>
+                    <!-- <div class="col-lg-4">
+                        <input type="text" class="form-control form-control-lg form-control-solid" formControlName="weightUnit"
+                            placeholder="Unit" />
+                    </div> -->
+                </div>
+
+                <!-- Tags -->
+                <!-- <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Tags</label>
                     <div class="col-lg-8">
                         <div formArrayName="tags" *ngFor="let tag of petForm.get('tags')?.value; let i = index;">
@@ -130,7 +165,30 @@
                         <button type="button" class="btn btn-light-primary" (click)="addTag()">+</button>
                         <button type="button" class="btn btn-light-danger ms-2" (click)="removeaddTagLast()">-</button>
                     </div>
+                </div> -->
+                <!-- Tags Input -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Tags</label>
+                    <div class="col-lg-8">
+                        <div class="tag-input-container">
+                            <input type="text" class="form-control form-control-lg form-control-solid" placeholder="Type a tag"
+                                [formControl]="tagInputControl" (input)="onTagInput()" (keydown.enter)="addTagByInput()" />
+                
+                            <ul class="tag-suggestions" *ngIf="matchingTags.length > 0">
+                                <li *ngFor="let tag of matchingTags" (click)="selectTag(tag)">
+                                    {{ tag.name.en }}
+                                </li>
+                            </ul>
+                
+                            <div class="selected-tags mt-3">
+                                <span *ngFor="let tag of selectedTags" class="badge badge-primary ms-2">
+                                    #{{ tag.name.en }} <span (click)="removeTag(tag)"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
                 <!-- About -->
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">About</label>
@@ -143,13 +201,26 @@
                 <div class="row mb-6">
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Colors</label>
                     <div class="col-lg-8">
-                        <div formArrayName="colors"
+                        <!-- <div formArrayName="colors"
                             *ngFor="let color of petForm.get('colors')?.value; let i = index;">
                             <div [formGroupName]="i" class="mb-2">
                                 <input type="text" formControlName="name" placeholder="Color name (en)"
                                     class="form-control mb-1" />
                                 <input type="text" formControlName="_id" placeholder="Color ID"
                                     class="form-control mb-1" />
+                            </div>
+                        </div> -->
+                        <div formArrayName="colors" class="mb-3">
+                            <div *ngFor="let color of petForm.get('colors')?.value; let i = index" [formGroupName]="i">
+                                <!-- <div formGroupName="name" class="mb-3"> -->
+                                    <select class="form-control form-control-lg form-control-solid mb-3" formControlName="_id">
+                                        <option *ngFor="let colorOption of petColors" 
+                                        [value]="colorOption._id">
+                                            {{ colorOption.name.en }}
+                                        </option>
+                                    </select>
+                                <!-- </div> -->
+                        
                             </div>
                         </div>
                         <button type="button" class="btn btn-light-primary" (click)="addColor()">+</button>
@@ -169,7 +240,9 @@
                     <label class="col-lg-4 col-form-label fw-bold fs-6">Owner</label>
                     <div class="col-lg-8">
                         <input type="text" class="form-control form-control-lg form-control-solid"
-                            formControlName="owner" placeholder="Owner" />
+                            formControlName="owner" 
+                            placeholder="Owner" 
+                            />
                     </div>
                 </div>
                 <!-- Active -->
@@ -179,18 +252,7 @@
                         <input type="checkbox" class="form-check-input form-check-solid" formControlName="active" />
                     </div>
                 </div>
-                <!-- Group Of Age -->
-                <div class="row mb-6">
-                    <label class="col-lg-4 col-form-label fw-bold fs-6">Group Of Age</label>
-                    <div class="col-lg-8">
-                        <select class="form-select form-select-lg form-select-solid" formControlName="gender">
-                            <option *ngFor="let groupAge of petGroupAges" [value]="groupAge.name.en"
-                                [selected]="groupAge.name.en === petForm.get('groupOfAge')?.value">
-                                {{ groupAge.name.en }}
-                            </option>
-                        </select>
-                    </div>
-                </div>
+               
             </div>
             <div class="card-footer d-flex justify-content-end py-6 px-9">
                 <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="onSubmit()">

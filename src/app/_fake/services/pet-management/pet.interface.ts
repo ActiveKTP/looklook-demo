@@ -1,3 +1,4 @@
+import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.service';
 
 export interface DataTablesResponse {
     success: boolean;
@@ -75,7 +76,7 @@ export interface IPetModel {
     certifiedPedigreeUrl: string | null; // Null
     petMedicals: any[]; // Array (empty)
     //owner: IOwnerModel; // ObjectId
-    owner: string | null;
+    owner: IOwnerModel | null;
     active: boolean; // Boolean
     deleted: boolean; // Boolean
     deleteReason: {
@@ -122,17 +123,18 @@ export interface PetTagTypeName {
         en: string;
         th: string;
     }
+    _id: string;
 }
 
 export interface PetTag {
     _id: string;
     name: PetTagName;
     type: PetTagTypeName;
-    active: boolean;
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+    //active: boolean;
+    // createdAt: string;
+    // createdBy: string;
+    // updatedAt: string;
+    // updatedBy: string;
 }
 
 export interface PetTagsResponse {

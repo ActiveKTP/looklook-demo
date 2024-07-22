@@ -21,10 +21,10 @@ export class PetGroupAgeService {
         },
         {
             "name": {
-                "en": "Prime",
+                "en": "Adolescent",
                 "th": "วัยหนุ่มสาว"
             },
-            "_id": "6614e32755aa415362325938",
+            "_id": "6614e4465c0e57200dee189e",
             "min": 3,
             "max": 6
         },
