@@ -4,16 +4,9 @@
     <div class="card-title">
       <!--begin::Search-->
       <div class="d-flex align-items-center position-relative my-1">
-        <app-keenicon
-          name="magnifier"
-          class="fs-3 position-absolute ms-5"
-        ></app-keenicon>
-        <input
-          type="text"
-          data-action="filter"
-          class="form-control form-control-solid w-250px ps-12"
-          placeholder="Search Owners"
-        />
+        <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
+        <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12"
+          placeholder="Search Owners" />
       </div>
       <!--end::Search-->
     </div>
@@ -35,15 +28,8 @@
   </div>
 
   <div class="card-body pt-0">
-    <app-action-crud
-      [datatableConfig]="datatableConfig"
-      route="/apps/owners"
-      (deleteEvent)="delete($event)"
-      (editEvent)="edit($event)"
-      (createEvent)="create()"
-      [reload]="reloadEvent"
-      [modal]="formModal"
-    ></app-action-crud>
+    <app-action-crud [datatableConfig]="datatableConfig" route="/apps/owner-managements" (deleteEvent)="delete($event)"
+      (editEvent)="edit($event)" (createEvent)="create()" [reload]="reloadEvent" [modal]="formModal"></app-action-crud>
   </div>
 </div>
 
@@ -53,67 +39,35 @@
   <form #myForm="ngForm" (ngSubmit)="onSubmit($event, myForm)">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Owner Details</h4>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="modal.dismiss('Cross click')"
-      ></button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <div
-        class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px"
-        id="kt_modal_update_customer_scroll"
-        data-kt-scroll="true"
-        data-kt-scroll-activate="{default: false, lg: true}"
-        data-kt-scroll-max-height="auto"
+      <div class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px" id="kt_modal_update_customer_scroll"
+        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
         data-kt-scroll-dependencies="#kt_modal_update_customer_header"
-        data-kt-scroll-wrappers="#kt_modal_update_customer_scroll"
-        data-kt-scroll-offset="300px"
-      >
+        data-kt-scroll-wrappers="#kt_modal_update_customer_scroll" data-kt-scroll-offset="300px">
         <!--begin::Owner toggle-->
-        <div
-          class="fw-bold fs-3 rotate collapsible mb-7"
-          data-bs-toggle="collapse"
-          role="button"
-          (click)="collapse1.toggle()"
-          [attr.aria-expanded]="!isCollapsed1"
-          aria-controls="kt_modal_update_customer_owner_info"
-        >
+        <div class="fw-bold fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" role="button"
+          (click)="collapse1.toggle()" [attr.aria-expanded]="!isCollapsed1"
+          aria-controls="kt_modal_update_customer_owner_info">
           Owner Information
           <span class="ms-2 rotate-180">
-            <i
-              class="ki-duotone ki-down fs-3"
-              [ngClass]="{ 'ki-up': !isCollapsed1 }"
-            ></i>
+            <i class="ki-duotone ki-down fs-3" [ngClass]="{ 'ki-up': !isCollapsed1 }"></i>
           </span>
         </div>
         <!--end::Owner toggle-->
         <!--begin::Owner form-->
-        <div
-          class="collapse show"
-          #collapse1="ngbCollapse"
-          [(ngbCollapse)]="isCollapsed1"
-        >
+        <div class="collapse show" #collapse1="ngbCollapse" [(ngbCollapse)]="isCollapsed1">
           <!--begin::Input group-->
           <div class="fv-row mb-7">
             <!--begin::Label-->
             <label class="required fw-semibold fs-6 mb-2">Name</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <input
-              type="text"
-              class="form-control form-control-solid"
-              name="displayName"
-              [(ngModel)]="ownerModel.displayName"
-              #displayName="ngModel"
-              required
-              minlength="4"
-            />
-            <div
-              *ngIf="myForm.submitted && myForm.invalid"
-              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
-            >
+            <input type="text" class="form-control form-control-solid" name="displayName"
+              [(ngModel)]="ownerModel.displayName" #displayName="ngModel" required minlength="4" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
               <div *ngIf="displayName.errors?.['required']">
                 Name is required
               </div>
@@ -130,29 +84,16 @@
             <!--begin::Label-->
             <label class="required fw-semibold fs-6 mb-2">
               <span>Email</span>
-              <span
-                class="ms-1"
-                placement="end"
-                ngbTooltip="Email address must be active"
-              >
+              <span class="ms-1" placement="end" ngbTooltip="Email address must be active">
                 <app-keenicon name="information" class="fs-7"></app-keenicon>
               </span>
             </label>
             <!--end::Label-->
             <!--begin::Input-->
-            <input
-              type="email"
-              class="form-control form-control-solid"
-              name="email"
-              [(ngModel)]="ownerModel.email"
-              #email="ngModel"
-              required
-              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-            />
-            <div
-              *ngIf="myForm.submitted && myForm.invalid"
-              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
-            >
+            <input type="email" class="form-control form-control-solid" name="email" [(ngModel)]="ownerModel.email"
+              #email="ngModel" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
               <div *ngIf="email.errors?.['required']">Email is required</div>
               <div *ngIf="email.errors?.['pattern']">Email is not valid</div>
             </div>
@@ -165,11 +106,8 @@
             <div class="d-flex">
               <div class="d-flex align-items-center">
                 <div class="form-check form-check-solid form-switch fv-row">
-                  <input
-                    class="form-check-input w-45px h-30px"
-                    type="checkbox"
-                    id="suspended"
-                  /><label class="form-check-label"></label>
+                  <input class="form-check-input w-45px h-30px" type="checkbox" id="suspended" /><label
+                    class="form-check-label"></label>
                 </div>
               </div>
               <label class="fw-semibold fs-6 mb-2 ms-3">Suspended</label>
@@ -177,12 +115,8 @@
             <div class="d-flex">
               <div class="d-flex align-items-center">
                 <div class="form-check form-check-solid form-switch fv-row">
-                  <input
-                    class="form-check-input w-45px h-30px"
-                    type="checkbox"
-                    id="active"
-                    checked="true"
-                  /><label class="form-check-label"></label>
+                  <input class="form-check-input w-45px h-30px" type="checkbox" id="active" checked="true" /><label
+                    class="form-check-label"></label>
                 </div>
               </div>
               <label class="fw-semibold fs-6 mb-2 ms-3">Active</label>
@@ -196,29 +130,19 @@
     </div>
     <div class="modal-footer flex-center">
       <!--begin::Button-->
-      <button
-        type="reset"
-        id="kt_modal_update_customer_cancel"
-        class="btn btn-light me-3"
-        (click)="modal.dismiss('cancel')"
-      >
+      <button type="reset" id="kt_modal_update_customer_cancel" class="btn btn-light me-3"
+        (click)="modal.dismiss('cancel')">
         Discard
       </button>
       <!--end::Button-->
 
       <!--begin::Button-->
-      <button
-        type="submit"
-        id="kt_modal_update_customer_submit"
-        class="btn btn-primary"
-        [attr.data-kt-indicator]="isLoading ? 'on' : 'off'"
-      >
+      <button type="submit" id="kt_modal_update_customer_submit" class="btn btn-primary"
+        [attr.data-kt-indicator]="isLoading ? 'on' : 'off'">
         <span class="indicator-label"> Submit </span>
         <span class="indicator-progress">
           Please wait...
-          <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
         </span>
       </button>
       <!--end::Button-->
