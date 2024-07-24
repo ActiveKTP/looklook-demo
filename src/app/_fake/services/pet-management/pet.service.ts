@@ -34,8 +34,14 @@ export class PetService {
 
   getPets(dataTablesParameters: any): Observable<DataTablesResponse> {
     console.log('==getPets call==')
-    const url = `${this.apiUrl}?page=1&limit=10&order=createdAt&orderBy=desc`;
-
+    console.log('dataTablesParameters=>',dataTablesParameters)
+    console.log('End dataTablesParameters<=')
+    /////////////////
+    const page = this.calDraw(dataTablesParameters.start, dataTablesParameters.length);
+    console.log('this page ==', page)
+    /////////////////
+    const url = `${this.apiUrl}?page=${page}&limit=${dataTablesParameters.length}&order=createdAt&orderBy=desc`;
+    console.log(url)
     // const headers = new HttpHeaders({
     //   Authorization: `Bearer ${this.token.requestAuthToken()}`,
     // });
@@ -43,9 +49,18 @@ export class PetService {
     // const options = {
     //   headers: headers
     // };
-
+    
     return this.http.get<DataTablesResponse>(url, this.options);
   }
+
+  calDraw(start:number, length:number, ) : number{
+    /////////////
+    if(start/length< 1)  {
+     return 1;
+     }
+     else return (start/length)+1;
+   ////////////
+ }
 
   getPet(id: string): Observable<IPetModel> {
 

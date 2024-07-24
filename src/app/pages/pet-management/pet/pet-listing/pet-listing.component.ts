@@ -11,7 +11,7 @@ import { PetGroupAgeService } from 'src/app/_fake/services/pet-management/groupA
 import { SweetAlertOptions } from 'sweetalert2';
 import moment from 'moment';
 import { IRoleModel, RoleService } from 'src/app/_fake/services/role.service';
-import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.service'
+import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.interface'
 import { DataTablesResponse, IPetModel, PetTypesResponse, PetColorsResponse, PetTagsResponse } from 'src/app/_fake/services/pet-management/pet.interface'
 import { Config } from 'datatables.net';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,8 +32,8 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   datatableConfig: Config = {};
 
   // Reload emitter inside datatable
-  //reloadEvent: EventEmitter<boolean> = new EventEmitter();
-  @Output() reloadEvent = new EventEmitter<boolean>();
+  reloadEvent: EventEmitter<boolean> = new EventEmitter();
+  //@Output() reloadEvent = new EventEmitter<boolean>();
 
   // Single model
   aPet: Observable<IPetModel>;
@@ -125,7 +125,7 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.getPets(dataTablesParameters).subscribe((resp: DataTablesResponse) => {
           callback({
-            draw: resp.currentPage,
+            draw: dataTablesParameters.draw,
             recordsTotal: resp.total,
             recordsFiltered: resp.total,
             data: resp.pets
@@ -276,6 +276,11 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
   delete(_id: string) {
     console.log('=delete=')
     console.log(_id)
+
+    const completeFn = () => {
+      this.isLoading = false;
+    };
+
     this.apiService.deletePet(_id).subscribe({
       next: () => {
           console.log('delete complete')
@@ -284,7 +289,8 @@ export class PetListingComponent implements OnInit, AfterViewInit, OnDestroy {
       error: (err) => {
           console.error('Error deleting pet', err);
           alert('An error occurred while deleting the pet.');
-      }
+      },
+      complete: completeFn,
   });
   }
 

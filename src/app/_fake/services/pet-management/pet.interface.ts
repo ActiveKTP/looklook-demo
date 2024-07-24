@@ -1,4 +1,4 @@
-import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.service';
+import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.interface';
 
 export interface DataTablesResponse {
     success: boolean;

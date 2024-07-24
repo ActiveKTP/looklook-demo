@@ -151,14 +151,17 @@ export class CrudComponent implements OnInit, AfterViewInit, OnDestroy {
 
         switch (action) {
           case 'view':
+            console.log(`${this.route}/${id}`)
             this.router.navigate([`${this.route}/${id}`]);
             break;
 
           case 'create':
+            console.log(`${this.route}/add`)
             this.router.navigate([`${this.route}/add`]); // Navigate to add route
             break;
 
           case 'edit':
+            console.log(`${this.route}/edit/${id}`)
             this.router.navigate([`${this.route}/edit/${id}`]); // Navigate to edit route
             break;
 

@@ -9,7 +9,8 @@ import { PetColorService } from 'src/app/_fake/services/pet-management/color.ser
 import { PetMockService } from 'src/app/_fake/services/pet-management/mock.service';
 import { PetGroupAgeService } from 'src/app/_fake/services/pet-management/groupAge.service';
 import { PetTagService } from 'src/app/_fake/services/pet-management/tag.service';
-import { IOwnerModel, OwnerService } from 'src/app/_fake/services/owner-management/owner.service';
+import { OwnerService } from 'src/app/_fake/services/owner-management/owner.service';
+import { IOwnerModel } from 'src/app/_fake/services/owner-management/owner.interface';
 import {
     AuthService,
     UserType,
