@@ -6,8 +6,8 @@ import { environment } from '../../../../../environments/environment';
 import { AuthModel } from '../../models/auth.model';
 
 // const API_USERS_URL = `${environment.apiUrl}/auth`;
-//const API_USERS_URL = `${environment.apiUrl}/api/v1/admin/auth`;
-const API_USERS_URL = `${environment.apiUrl}/api/v1/auth`;
+const API_USERS_URL = `${environment.apiUrl}/api/v1/admin/auth`;
+//const API_USERS_URL = `${environment.apiUrl}/api/v1/auth`;
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +18,8 @@ export class AuthHTTPService {
   // public methods
   login(username: string, password: string): Observable<any> {
     return this.http.post<AuthModel>(`${API_USERS_URL}/login`, {
-      //username,
-      email:username,
+      username,
+      //email:username,
       password,
     });
   }
