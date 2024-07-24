@@ -38,6 +38,8 @@ export class UserService {
 
     getUsers(dataTablesParameters: any): Observable<DataTablesResponse> {
         const url = `${this.apiUrl}-list`;
+        console.log('dataTablesParameters=>', dataTablesParameters)
+        console.log('End dataTablesParameters<=')
         return this.http.post<DataTablesResponse>(url, dataTablesParameters);
     }
 

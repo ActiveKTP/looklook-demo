@@ -2,7 +2,8 @@ import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, OnDestroy, O
 import { NgForm } from '@angular/forms';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Observable } from 'rxjs';
-import { DataTablesResponse, IOwnerModel, OwnerService } from 'src/app/_fake/services/owner-management/owner.service';
+import { OwnerService } from 'src/app/_fake/services/owner-management/owner.service';
+import { DataTablesResponse, IOwnerModel,  } from 'src/app/_fake/services/owner-management/owner.interface';
 import { SweetAlertOptions } from 'sweetalert2';
 import moment from 'moment';
 import { IRoleModel, RoleService } from 'src/app/_fake/services/role.service';
@@ -65,13 +66,15 @@ export class OwnerListingComponent implements OnInit, AfterViewInit, OnDestroy {
       serverSide: true,
       ajax: (dataTablesParameters: any, callback) => {
         this.apiService.getOwners(dataTablesParameters).subscribe((resp: DataTablesResponse) => {
+          console.log(resp)
+          console.log('================')
+          console.log(dataTablesParameters)
           callback({
             draw: dataTablesParameters.draw,
             recordsTotal: resp.total,
             recordsFiltered: resp.total,
             data: resp.users
           });
-          console.log(resp);
         });
       },
       columns: [

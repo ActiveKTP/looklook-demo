@@ -1,0 +1,85 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse"
+        data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Profile Details</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form [formGroup]="petForm" novalidate class="form">
+            <div class="card-body border-top p-9">
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Name</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="name" placeholder="Pet name" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Type</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="type" placeholder="Pet type" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Breed</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="breed" placeholder="Pet breed" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Gender</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="gender" placeholder="Pet gender" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Weight</label>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-lg form-control-solid"
+                            formControlName="weight" placeholder="Weight" />
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="weightUnit" placeholder="Unit" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Birth Date</label>
+                    <div class="col-lg-8">
+                        <input type="date" class="form-control form-control-lg form-control-solid"
+                            formControlName="birthDate" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Adoption Date</label>
+                    <div class="col-lg-8">
+                        <input type="date" class="form-control form-control-lg form-control-solid"
+                            formControlName="adoptionDate" />
+                    </div>
+                </div>
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">About</label>
+                    <div class="col-lg-8">
+                        <textarea class="form-control form-control-lg form-control-solid" formControlName="about"
+                            placeholder="About the pet"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="saveSettings()">
+                    <ng-container *ngIf="!isLoading">Save Changes</ng-container>
+                    <ng-container *ngIf="isLoading">
+                        <span class="indicator-progress" [style.display]="'block'">
+                            Please wait... {{ " " }}
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </ng-container>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

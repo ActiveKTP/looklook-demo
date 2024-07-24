@@ -2,25 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Token } from '../token.service';
+import { PetTypesResponse } from '../pet-management/pet.interface'
 
-export interface PetTypeName {
-    en: string;
-    th: string;
-  }
-  
-  export interface PetType {
-    _id: string;
-    name: PetTypeName;
-    imageUrl: string;
-    active: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }
-  
-  export interface PetTypesResponse {
-    success: boolean;
-    petTypes: PetType[];
-  }
 
 @Injectable({
   providedIn: 'root'
@@ -31,20 +14,20 @@ export class PetTypeService {
 
   private token = new Token();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getTypes(): Observable<PetTypesResponse> {
 
     console.log('==get type call==')
-      const url = `${this.apiUrl}`;
+    const url = `${this.apiUrl}`;
 
-      const headers = new HttpHeaders({
-          Authorization: `Bearer ${this.token.requestAuthToken()}`,
-      });
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token.requestAuthToken()}`,
+    });
 
-      const options = { 
-          headers: headers
-      };
+    const options = {
+      headers: headers
+    };
 
     return this.http.get<PetTypesResponse>(url, options);
   }

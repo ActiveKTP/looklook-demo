@@ -1,0 +1,208 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse"
+        data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">Profile Details</h3>
+        </div>
+    </div>
+    <div id="kt_account_profile_details" class="collapse show">
+        <form [formGroup]="petForm" novalidate class="form">
+            <div class="card-body border-top p-9">
+                <!-- Name -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Name</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="name" placeholder="Pet name" />
+                    </div>
+                </div>
+
+                <!-- Type -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label required fw-bold fs-6">Type</label>
+                    <div class="col-lg-8">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="type"
+                            (change)="onPetTypeChange($event)">
+                            <option *ngFor="let type of petTypes" [value]="type._id">
+                                {{ type.name.en }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Breed Type -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Breed Type</label>
+                    <div class="col-lg-8">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="breedType">
+                            <option *ngFor="let breedType of petBreedtype" [value]="breedType.name">
+                                {{ breedType.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Breeds -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Breeds</label>
+                    <div class="col-lg-8">
+                        <div formArrayName="breeds" class="mb-3">
+                            <div *ngFor="let breed of breeds.controls; let i = index" [formGroupName]="i">
+                                <select class="form-control form-control-lg form-control-solid mb-3"
+                                    formControlName="_id">
+                                    <option *ngFor="let breedOption of petBreeds" [value]="breedOption._id">
+                                        {{ breedOption.name.en }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-light-primary" (click)="addBreed()">+</button>
+                        <button type="button" class="btn btn-light-danger ms-2" (click)="removeBreedLast()">-</button>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6 required">Gender</label>
+                    <div class="col-lg-8">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="gender">
+                            <option *ngFor="let gender of petGenders" [value]="gender.en">
+                                {{ gender.en }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Group Of Age -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Group Of Age</label>
+                    <div class="col-lg-8">
+                        <select class="form-select form-select-lg form-select-solid" formControlName="groupOfAge">
+                            <option *ngFor="let groupAge of petGroupAges" [value]="groupAge.name.en">
+                                {{ groupAge.name.en }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Birth Date -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6 required">Birth Date</label>
+                    <div class="col-lg-8">
+                        <input type="date" class="form-control form-control-lg form-control-solid"
+                            formControlName="birthDate" />
+                    </div>
+                </div>
+
+                <!-- Adoption Date -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Adoption Date</label>
+                    <div class="col-lg-8">
+                        <input type="date" class="form-control form-control-lg form-control-solid"
+                            formControlName="adoptionDate" />
+                    </div>
+                </div>
+
+                <!-- Weight -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Weight</label>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-lg form-control-solid"
+                            formControlName="weight" placeholder="Weight" />
+                    </div>
+                </div>
+
+                <!-- Tags Input -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Tags</label>
+                    <div class="col-lg-8">
+                        <div class="tag-input-container">
+                            <input type="text" class="form-control form-control-lg form-control-solid"
+                                placeholder="Type a tag" [formControl]="tagInputControl" (input)="onTagInput()"
+                                (keydown.enter)="addTagByInput()" />
+
+                            <ul class="tag-suggestions" *ngIf="matchingTags.length > 0">
+                                <li *ngFor="let tag of matchingTags" (click)="selectTag(tag)">
+                                    {{ tag.name.en }}
+                                </li>
+                            </ul>
+
+                            <div class="selected-tags mt-3">
+                                <span *ngFor="let tag of selectedTags" class="badge badge-primary ms-2">
+                                    #{{ tag.name.en }} <span (click)="removeTag(tag)"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">About</label>
+                    <div class="col-lg-8">
+                        <textarea class="form-control form-control-lg form-control-solid" formControlName="about"
+                            placeholder="About the pet"></textarea>
+                    </div>
+                </div>
+
+                <!-- Colors -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Colors</label>
+                    <div class="col-lg-8">
+                        <div formArrayName="colors" class="mb-3">
+                            <div *ngFor="let color of colors.controls; let i = index" [formGroupName]="i">
+                                <select class="form-control form-control-lg form-control-solid mb-3"
+                                    formControlName="_id">
+                                    <option *ngFor="let colorOption of petColors" [value]="colorOption._id">
+                                        {{ colorOption.name.en }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-light-primary" (click)="addColor()">+</button>
+                        <button type="button" class="btn btn-light-danger ms-2"
+                            (click)="removeaddColorLast()">-</button>
+                    </div>
+                </div>
+
+                <!-- Certified Pedigree URL -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Certified Pedigree URL</label>
+                    <div class="col-lg-8">
+                        <input type="url" class="form-control form-control-lg form-control-solid"
+                            formControlName="certifiedPedigreeUrl" placeholder="Certified Pedigree URL" />
+                    </div>
+                </div>
+
+                <!-- Owner -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Owner</label>
+                    <div class="col-lg-8">
+                        <input type="text" class="form-control form-control-lg form-control-solid"
+                            formControlName="owner" placeholder="Owner" />
+                    </div>
+                </div>
+
+                <!-- Active -->
+                <div class="row mb-6">
+                    <label class="col-lg-4 col-form-label fw-bold fs-6">Active</label>
+                    <div class="col-lg-8">
+                        <input type="checkbox" class="form-check-input form-check-solid" formControlName="active" />
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer d-flex justify-content-end py-6 px-9">
+                <button type="button" class="btn btn-primary" [disabled]="isLoading" (click)="onSubmit()">
+                    <ng-container *ngIf="!isLoading">Save Changes</ng-container>
+                    <ng-container *ngIf="isLoading">
+                        <span class="indicator-progress" [style.display]="'block'">
+                            Please wait... {{ " " }}
+                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                        </span>
+                    </ng-container>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

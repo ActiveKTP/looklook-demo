@@ -1,0 +1,84 @@
+<div class="card mb-5 mb-xl-10">
+    <div class="card-header cursor-pointer">
+        <div class="card-title m-0">
+            <h3 class="fw-bolder m-0">{{ isEditMode ? 'Edit Owner' : 'Create Owner' }}</h3>
+        </div>
+    </div>
+    <form [formGroup]="ownerForm" (ngSubmit)="onSubmit()">
+        <div class="card-body p-9">
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted required">Email</label>
+                <div class="col-lg-8">
+                    <input formControlName="email" type="email" class="form-control form-control-lg"
+                        placeholder="Enter email" [readonly]="isEditMode" />
+                </div>
+            </div>
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Display Name</label>
+                <div class="col-lg-8">
+                    <input formControlName="displayName" type="text" class="form-control form-control-lg"
+                        placeholder="Enter display name" [readonly]="isEditMode" />
+                </div>
+            </div>
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Avatar URL</label>
+                <div class="col-lg-8">
+                    <input formControlName="avatarUrl" type="text" class="form-control form-control-lg"
+                        placeholder="Enter avatar URL" [readonly]="isEditMode" />
+                </div>
+            </div>
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Delete Reason</label>
+                <div class="col-lg-8">
+                    <input formControlName="deleteReason" type="text" class="form-control form-control-lg"
+                        placeholder="Enter delete reason" [readonly]="isEditMode" />
+                </div>
+            </div>
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Suspend Request</label>
+                <div class="col-lg-8">
+                    <input formControlName="suspendRequest" type="text" class="form-control form-control-lg"
+                        placeholder="Enter suspend request reason" [readonly]="isEditMode" />
+                </div>
+            </div>
+            <!-- <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Suspended</label>
+                <div class="col-lg-8">
+                    <div class="form-check form-check-solid">
+                        <input formControlName="suspended" type="checkbox" class="form-check-input" id="suspendedCheck"
+                            [readonly]="isEditMode" />
+                        <label class="form-check-label" for="suspendedCheck">Suspended</label>
+                    </div>
+                </div>
+            </div> -->
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Active</label>
+                <div class="col-lg-8">
+                    <div class="form-check form-check-solid">
+                        <input formControlName="active" type="checkbox" class="form-check-input" id="activeCheck" />
+                        <label class="form-check-label" for="activeCheck">Active</label>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Created At</label>
+                <div class="col-lg-8">
+                    <input formControlName="createdAt" type="text" class="form-control form-control-lg"
+                        placeholder="Enter creation date" readonly />
+                </div>
+            </div>
+            <div class="row mb-7">
+                <label class="col-lg-4 fw-bold text-muted">Updated At</label>
+                <div class="col-lg-8">
+                    <input formControlName="updatedAt" type="text" class="form-control form-control-lg"
+                        placeholder="Enter last update date" readonly />
+                </div>
+            </div> -->
+        </div>
+        <div class="card-footer d-flex justify-content-end py-6 px-9">
+            <button type="submit" class="btn btn-primary" [disabled]="ownerForm.invalid || ownerForm.pristine">
+                {{ isEditMode ? 'Update' : 'Create' }}
+            </button>
+        </div>
+    </form>
+</div>

@@ -4,16 +4,9 @@
     <div class="card-title">
       <!--begin::Search-->
       <div class="d-flex align-items-center position-relative my-1">
-        <app-keenicon
-          name="magnifier"
-          class="fs-3 position-absolute ms-5"
-        ></app-keenicon>
-        <input
-          type="text"
-          data-action="filter"
-          class="form-control form-control-solid w-250px ps-12"
-          placeholder="Search pets"
-        />
+        <app-keenicon name="magnifier" class="fs-3 position-absolute ms-5"></app-keenicon>
+        <input type="text" data-action="filter" class="form-control form-control-solid w-250px ps-12"
+          placeholder="Search pets" />
       </div>
       <!--end::Search-->
     </div>
@@ -35,15 +28,9 @@
   </div>
 
   <div class="card-body pt-0">
-    <app-action-crud
-      [datatableConfig]="datatableConfig"
-      route="/apps/pets"
-      (deleteEvent)="delete($event)"
-      (editEvent)="edit($event)"
-      (createEvent)="create()"
-      [reload]="reloadEvent"
-      [modal]="formModal"
-    ></app-action-crud>
+    <app-action-crud [datatableConfig]="datatableConfig" route="/apps/pet-managements" (deleteEvent)="delete($event)"
+      (editEvent)="edit($event)" (createEvent)="create()" [reload]="reloadEvent" [modal]="formModal">
+    </app-action-crud>
   </div>
 </div>
 
@@ -53,123 +40,100 @@
   <form #myForm="ngForm" (ngSubmit)="onSubmit($event, myForm)">
     <div class="modal-header">
       <h4 class="modal-title" id="modal-basic-title">Pet Details</h4>
-      <button
-        type="button"
-        class="btn-close"
-        aria-label="Close"
-        (click)="modal.dismiss('Cross click')"
-      ></button>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
 
     <div class="modal-body">
-      <div
-        class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px"
-        id="kt_modal_update_customer_scroll"
-        data-kt-scroll="true"
-        data-kt-scroll-activate="{default: false, lg: true}"
-        data-kt-scroll-max-height="auto"
+      <div class="d-flex flex-column scroll-y me-n7 pe-7 mw-650px" id="kt_modal_update_customer_scroll"
+        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
         data-kt-scroll-dependencies="#kt_modal_update_customer_header"
-        data-kt-scroll-wrappers="#kt_modal_update_customer_scroll"
-        data-kt-scroll-offset="300px"
-      >
-      
-      <!--begin::owner toggle-->
-      <div
-      class="fw-bold fs-3 rotate collapsible mb-7"
-      data-bs-toggle="collapse"
-      role="button"
-      (click)="collapse2.toggle()"
-      [attr.aria-expanded]="!isCollapsed2"
-      aria-controls="kt_modal_update_customer_owner_info"
-    >
-      owner Information
-      <span class="ms-2 rotate-180">
-        <i
-          class="ki-duotone ki-down fs-3"
-          [ngClass]="{ 'ki-up': !isCollapsed2 }"
-        ></i>
-      </span>
-    </div>
-    <!--end::owner toggle-->
+        data-kt-scroll-wrappers="#kt_modal_update_customer_scroll" data-kt-scroll-offset="300px">
 
-     <!--begin::owner form-->
-     <div
-     class="collapse show"
-     #collapse2="ngbCollapse"
-     [(ngbCollapse)]="isCollapsed2"
-   >
+        <!--begin::owner toggle-->
+        <div class="fw-bold fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" role="button"
+          (click)="collapse2.toggle()" [attr.aria-expanded]="!isCollapsed2"
+          aria-controls="kt_modal_update_customer_owner_info">
+          owner Information
+          <span class="ms-2 rotate-180">
+            <i class="ki-duotone ki-down fs-3" [ngClass]="{ 'ki-up': !isCollapsed2 }"></i>
+          </span>
+        </div>
+        <!--end::owner toggle-->
 
-    <!--begin::Input group-->
-    <div class="fv-row mb-7">
-      <!--begin::Label-->
-      <label class="required fw-semibold fs-6 mb-2">Owner</label>
-      <!--end::Label-->
-      <!--begin::Input-->
-      <input
-        type="text"
-        class="form-control form-control-solid"
-        name="owner"
-        [(ngModel)]="petModel.owner"
-        #owner="ngModel"
-        required
-        minlength="4"
-      />
-      <div
-        *ngIf="myForm.submitted && myForm.invalid"
-        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
-      >
-        <div *ngIf="name.errors?.['required']">owner is required</div>
-      </div>
-      <!--end::Input-->
-    </div>
-    <!--end::Input group-->
+        <!--begin::owner form-->
+        <div class="collapse show" #collapse2="ngbCollapse" [(ngbCollapse)]="isCollapsed2">
 
-   </div>
+          <!--begin::Input group-->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fw-semibold fs-6 mb-2">Avatar</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" class="form-control form-control-solid" name="avatar" [(ngModel)]="ownerModel.avatarUrl"
+              #avatar="ngModel" minlength="4" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+            </div>
+            <!--end::Input-->
+          </div>
+          <!--end::Input group-->
+
+          <!--begin::Input group-->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fw-semibold fs-6 mb-2">DisplayName</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" class="form-control form-control-solid" name="displayName"
+              [(ngModel)]="ownerModel.displayName" #displayName="ngModel" minlength="4" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+            </div>
+            <!--end::Input-->
+          </div>
+          <!--end::Input group-->
+
+          <!--begin::Input group-->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="required fw-semibold fs-6 mb-2">Email</label>
+            <!--end::Label-->
+            <!--begin::Input-->
+            <input type="text" class="form-control form-control-solid" name="email" [(ngModel)]="ownerModel.email"
+              #email="ngModel" required minlength="4" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+              <div *ngIf="name.errors?.['required']">email is required</div>
+            </div>
+            <!--end::Input-->
+          </div>
+          <!--end::Input group-->
+
+        </div>
 
         <!--begin::pet toggle-->
-        <div
-          class="fw-bold fs-3 rotate collapsible mb-7"
-          data-bs-toggle="collapse"
-          role="button"
-          (click)="collapse1.toggle()"
-          [attr.aria-expanded]="!isCollapsed1"
-          aria-controls="kt_modal_update_customer_pet_info"
-        >
+        <div class="fw-bold fs-3 rotate collapsible mb-7" data-bs-toggle="collapse" role="button"
+          (click)="collapse1.toggle()" [attr.aria-expanded]="!isCollapsed1"
+          aria-controls="kt_modal_update_customer_pet_info">
           pet Information
           <span class="ms-2 rotate-180">
-            <i
-              class="ki-duotone ki-down fs-3"
-              [ngClass]="{ 'ki-up': !isCollapsed1 }"
-            ></i>
+            <i class="ki-duotone ki-down fs-3" [ngClass]="{ 'ki-up': !isCollapsed1 }"></i>
           </span>
         </div>
         <!--end::pet toggle-->
 
         <!--begin::pet form-->
-        <div
-          class="collapse show"
-          #collapse1="ngbCollapse"
-          [(ngbCollapse)]="isCollapsed1"
-        >
+        <div class="collapse show" #collapse1="ngbCollapse" [(ngbCollapse)]="isCollapsed1">
           <!--begin::Input group-->
           <div class="fv-row mb-7">
             <!--begin::Label-->
             <label class="required fw-semibold fs-6 mb-2">Name</label>
             <!--end::Label-->
             <!--begin::Input-->
-            <input
-              type="text"
-              class="form-control form-control-solid"
-              name="name"
-              [(ngModel)]="petModel.name"
-              #name="ngModel"
-              required
-              minlength="4"
-            />
-            <div
-              *ngIf="myForm.submitted && myForm.invalid"
-              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"
-            >
+            <input type="text" class="form-control form-control-solid" name="name" [(ngModel)]="petModel.name"
+              #name="ngModel" required minlength="4" />
+            <div *ngIf="myForm.submitted && myForm.invalid"
+              class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
               <div *ngIf="name.errors?.['required']">Name is required</div>
               <div *ngIf="name.errors?.['minlength']">
                 Name must be at least 4 characters long
@@ -185,87 +149,71 @@
           <div class="fv-row mb-7">
             <!--begin::Label-->
             <label class="fs-6 fw-semibold form-label mb-2">
-                <span class="required">Photo</span>
+              <span class="required">Photo</span>
             </label>
-          
+
             <div class="flex justify-center items-center">
               <div class="image-input size-16" data-image-input="true">
-               <input accept=".png, .jpg, .jpeg" name="petPhoto" type="file"/>
-               <input name="avatar_remove" type="hidden"/>
-               <div class="btn btn-icon btn-icon-xs btn-light shadow-default absolute z-1 size-5 -top-0.5 -right-0.5 rounded-full" data-image-input-remove="true" data-tooltip="#image_input_tooltip" data-tooltip-trigger="hover">
-                <i class="ki-outline ki-cross">
-                </i>
-               </div>
-               <span class="tooltip" id="image_input_tooltip">
-                Click to remove or revert
-               </span>
-               <div class="image-input-placeholder" style="background-image:url(media/avatars/blank.png)">
-                <div class="image-input-preview" style="background-image:url(media/avatars/300-2.png)">
+                <input accept=".png, .jpg, .jpeg" name="petPhoto" type="file" />
+                <input name="avatar_remove" type="hidden" />
+                <div
+                  class="btn btn-icon btn-icon-xs btn-light shadow-default absolute z-1 size-5 -top-0.5 -right-0.5 rounded-full"
+                  data-image-input-remove="true" data-tooltip="#image_input_tooltip" data-tooltip-trigger="hover">
+                  <i class="ki-outline ki-cross">
+                  </i>
                 </div>
-               </div>
+                <span class="tooltip" id="image_input_tooltip">
+                  Click to remove or revert
+                </span>
+                <div class="image-input-placeholder" style="background-image:url(media/avatars/blank.png)">
+                  <div class="image-input-preview" style="background-image:url(media/avatars/300-2.png)">
+                  </div>
+                </div>
               </div>
-             </div>
-          
-        </div>
+            </div>
+
+          </div>
           <!--end::photo-->
 
-        <div class="separator separator-dashed my-5"></div>
+          <div class="separator separator-dashed my-5"></div>
 
-        <!-- BirthDate -->
-        <div class="fv-row mb-7">
-          <!--begin::Label-->
-          <label class="fs-6 fw-semibold form-label mb-2">
+          <!-- BirthDate -->
+          <div class="fv-row mb-7">
+            <!--begin::Label-->
+            <label class="fs-6 fw-semibold form-label mb-2">
               <span class="required">Date & Time</span>
-              <span class="ms-2" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true" data-bs-content="Select a date & time.">
-                  <i class="ki-duotone ki-information fs-7">
-                      <span class="path1"></span>
-                      <span class="path2"></span>
-                      <span class="path3"></span>
-                  </i>
+              <span class="ms-2" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-html="true"
+                data-bs-content="Select a date & time.">
+                <i class="ki-duotone ki-information fs-7">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                  <span class="path3"></span>
+                </i>
               </span>
-          </label>
-        
-          <input 
-          class="form-control form-control-solid" 
-          placeholder="yyyy-mm-dd" 
-          name="birthDate" 
-          id="birthDate" 
-          [(ngModel)]="petModel.birthDate"
-          #birthDate="ngModel"
-          />
-        
-      </div>
-        <!--end::BirthDate-->
+            </label>
 
-      <div class="separator separator-dashed my-5"></div>
+            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="birthDate" id="birthDate"
+              [(ngModel)]="petModel.birthDate" #birthDate="ngModel" />
+
+          </div>
+          <!--end::BirthDate-->
+
+          <div class="separator separator-dashed my-5"></div>
 
           <!-- Type -->
           <div class="mb-7">
             <label class="required fw-semibold fs-6 mb-5">Type</label>
 
-            <div
-              *ngFor="
+            <div *ngFor="
                 let type of (petTypes$ | async)?.petTypes;
                 let last = last
-              "
-            >
+              ">
               <div class="d-flex fv-row">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    id="kt_modal_update_type_option_{{ type._id }}"
-                    name="type"
-                    #type="ngModel"
-                    [(ngModel)]="petModel.type"
-                    type="radio"
-                    [value]="type.name.en"
-                    [checked]="last"
-                    (change)="onPetTypeChange(type.name.en)"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="kt_modal_update_type_option_{{ type._id }}"
-                  >
+                  <input class="form-check-input me-3" id="kt_modal_update_type_option_{{ type._id }}" name="type"
+                    type="radio" [value]="type.name.en" [checked]="petModel.type?._id === type._id"
+                    (change)="onPetTypeChange(type.name.en)" />
+                  <label class="form-check-label" for="kt_modal_update_type_option_{{ type._id }}">
                     <div class="fw-bold text-gray-800">
                       {{ type.name.en | titlecase }}
                     </div>
@@ -293,17 +241,9 @@
             <div *ngFor="let breed of petBreed$ | async; let last = last">
               <div class="d-flex flex-row">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    id="breed_{{ breed.name._id }}"
-                    name="breed_{{ breed.name._id }}"
-                    [ngModel]="petModel.breeds.includes(breed.name._id)"
-                    type="checkbox"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="breed_{{ breed.name._id }}"
-                  >
+                  <input class="form-check-input me-3" id="breed_{{ breed.name._id }}" name="breed_{{ breed.name._id }}"
+                    [ngModel]="petModel.breeds?.includes(breed.name._id)" type="checkbox" />
+                  <label class="form-check-label" for="breed_{{ breed.name._id }}">
                     <div class="fw-bold text-gray-800">
                       {{ breed.name.en | titlecase }}
                     </div>
@@ -327,15 +267,8 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    name="gender"
-                    #gender="ngModel"
-                    [(ngModel)]="petModel.gender"
-                    type="radio"
-                    value="male"
-                    checked="last"
-                  />
+                  <input class="form-check-input me-3" name="gender" #gender="ngModel" [(ngModel)]="petModel.gender"
+                    type="radio" value="male" checked="last" />
                   <label class="form-check-label">
                     <div class="fw-bold text-gray-800">male</div>
                     <div class="text-gray-600">ตัวผู้</div>
@@ -344,15 +277,8 @@
               </div>
               <div class="col-md-6">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    name="gender"
-                    #gender="ngModel"
-                    [(ngModel)]="petModel.gender"
-                    type="radio"
-                    value="female"
-                    checked="last"
-                  />
+                  <input class="form-check-input me-3" name="gender" #gender="ngModel" [(ngModel)]="petModel.gender"
+                    type="radio" value="female" checked="last" />
                   <label class="form-check-label">
                     <div class="fw-bold text-gray-800">female</div>
                     <div class="text-gray-600">ตัวเมีย</div>
@@ -369,25 +295,13 @@
           <div class="mb-7">
             <label class="fw-semibold fs-6 mb-5">Group Of Age</label>
 
-            <div
-              *ngFor="let groupOfAge of petGroupAge$ | async; let last = last"
-            >
+            <div *ngFor="let groupOfAge of petGroupAge$ | async; let last = last">
               <div class="d-flex fv-row">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    id="kt_modal_update_groupOfAge_option_{{ groupOfAge._id }}"
-                    name="groupOfAge"
-                    #groupOfAge="ngModel"
-                    [(ngModel)]="petModel.groupOfAge"
-                    type="radio"
-                    [value]="groupOfAge._id"
-                    [checked]="last"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="kt_modal_update_groupOfAge_option_{{ groupOfAge._id }}"
-                  >
+                  <input class="form-check-input me-3" id="kt_modal_update_groupOfAge_option_{{ groupOfAge._id }}"
+                    name="groupOfAge" #groupOfAge="ngModel" [(ngModel)]="petModel.groupOfAge" type="radio"
+                    [value]="groupOfAge._id" [checked]="last" />
+                  <label class="form-check-label" for="kt_modal_update_groupOfAge_option_{{ groupOfAge._id }}">
                     <div class="fw-bold text-gray-800">
                       {{ groupOfAge.name.en | titlecase }}
                     </div>
@@ -408,26 +322,15 @@
           <div class="mb-7">
             <label class="required fw-semibold fs-6 mb-5">Colors</label>
 
-            <div
-              *ngFor="
+            <div *ngFor="
                 let color of (petColors$ | async)?.colors;
                 let last = last
-              "
-            >
+              ">
               <div class="d-flex fv-row">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    id="color_{{ color._id }}"
-                    name="color_{{ color._id }}"
-                    [ngModel]="petModel.colors.includes(color._id)"
-                    type="checkbox"
-                    [value]="color._id"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="color_{{ color._id }}"
-                  >
+                  <input class="form-check-input me-3" id="color_{{ color._id }}" name="color_{{ color._id }}"
+                    type="checkbox" [value]="color._id" />
+                  <label class="form-check-label" for="color_{{ color._id }}">
                     <div class="fw-bold text-gray-800">
                       {{ color.name.en | titlecase }}
                     </div>
@@ -448,26 +351,15 @@
           <div class="mb-7">
             <label class="required fw-semibold fs-6 mb-5">Tags</label>
 
-            <div
-              *ngFor="
+            <div *ngFor="
                 let tag of (petTags$ | async)?.tags;
                 let last = last
-              "
-            >
+              ">
               <div class="d-flex fv-row">
                 <div class="form-check form-check-custom form-check-solid">
-                  <input
-                    class="form-check-input me-3"
-                    id="tag_{{ tag._id }}"
-                    name="tag_{{ tag._id }}"
-                    [ngModel]="petModel.tags.includes(tag._id)"
-                    type="checkbox"
-                    [value]="tag._id"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="tag_{{ tag._id }}"
-                  >
+                  <input class="form-check-input me-3" id="tag_{{ tag._id }}" name="tag_{{ tag._id }}" type="checkbox"
+                    [value]="tag._id" />
+                  <label class="form-check-label" for="tag_{{ tag._id }}">
                     <div class="fw-bold text-gray-800">
                       {{ tag.name.en | titlecase }}
                     </div>
@@ -489,29 +381,19 @@
 
     <div class="modal-footer flex-center">
       <!--begin::Button-->
-      <button
-        type="reset"
-        id="kt_modal_update_customer_cancel"
-        class="btn btn-light me-3"
-        (click)="modal.dismiss('cancel')"
-      >
+      <button type="reset" id="kt_modal_update_customer_cancel" class="btn btn-light me-3"
+        (click)="modal.dismiss('cancel')">
         Discard
       </button>
       <!--end::Button-->
 
       <!--begin::Button-->
-      <button
-        type="submit"
-        id="kt_modal_update_customer_submit"
-        class="btn btn-primary"
-        [attr.data-kt-indicator]="isLoading ? 'on' : 'off'"
-      >
+      <button type="submit" id="kt_modal_update_customer_submit" class="btn btn-primary"
+        [attr.data-kt-indicator]="isLoading ? 'on' : 'off'">
         <span class="indicator-label"> Submit </span>
         <span class="indicator-progress">
           Please wait...
-          <span
-            class="spinner-border spinner-border-sm align-middle ms-2"
-          ></span>
+          <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
         </span>
       </button>
       <!--end::Button-->

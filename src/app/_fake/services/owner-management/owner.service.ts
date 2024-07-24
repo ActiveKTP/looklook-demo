@@ -2,76 +2,78 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Token } from '../token.service';
-import {environment} from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
+import { DataTablesResponse, IOwnerModel } from './owner.interface'
 
-export interface DataTablesResponse {
-    success: boolean;
-    users: IOwnerModel[];
-    pageSize: number;
-    currentPage: number;
-    total: number;
-  }
-
-export interface IDeleteReason {
-    reason: string | null;
-    remark: string | null;
-  }
-
-export interface IOwnerModel {
-    deleteReason: IDeleteReason;
-    _id: string;
-    email: string;
-    displayName: string;
-    avatarUrl: string;
-    active: boolean;
-    suspended: boolean;
-    suspendRequest: string | null;
-    createdAt: string;
-    updatedAt: string;
-  }
-
-  @Injectable({
-    providedIn: 'root'
+@Injectable({
+  providedIn: 'root'
 })
 export class OwnerService {
 
-    private apiUrl = `${environment.apiUrl}/api/v1/admin/user?page=1&limit=10`;
+  private apiUrl = `${environment.apiUrl}/api/v1/admin/user`;
 
-    private token = new Token();
+  private token = new Token();
 
-    constructor(private http: HttpClient) { }
+  private headers = new HttpHeaders({
+    Authorization: `Bearer ${this.token.requestAuthToken()}`,
+  });
 
-    getOwners(dataTablesParameters: any): Observable<DataTablesResponse> {
-      console.log('==getOwners call==')
-      const url = `${this.apiUrl}?page=${dataTablesParameters.page}&limit=${dataTablesParameters.limit}&order=${dataTablesParameters.order}&orderBy=${dataTablesParameters.orderBy}`;
+  private options = {
+    headers: this.headers
+  };
 
-      const headers = new HttpHeaders({
-          Authorization: `Bearer ${this.token.requestAuthToken()}`,
-      });
+  constructor(private http: HttpClient) { }
 
-      const options = { 
-          headers: headers
-      };
+  getOwners(dataTablesParameters: any): Observable<DataTablesResponse> {
+    console.log('==getOwners call==')
+    console.log('dataTablesParameters=>', dataTablesParameters)
+    console.log('End dataTablesParameters<=')
+    /////////////////
+    const page = this.calDraw(dataTablesParameters.start, dataTablesParameters.length);
+    console.log('this page ==', page)
+    /////////////////
+    const url = `${this.apiUrl}?page=${page}&limit=${dataTablesParameters.length}&order=${dataTablesParameters.order.column}&orderBy=${dataTablesParameters.order.dir}`;
+    console.log(url)
+    
+    return this.http.get<DataTablesResponse>(url, this.options);
+  }
 
-      return this.http.get<DataTablesResponse>(url, options);
-    }
+  calDraw(start:number, length:number, ) : number{
+    /////////////
+    if(start/length< 1)  {
+     return 1;
+     }
+     else return (start/length)+1;
+   ////////////
+ }
 
-    getOwner(id: string): Observable<IOwnerModel> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.get<IOwnerModel>(url);
-    }
+  getOwner(id: string): Observable<IOwnerModel> {
+    const url = `${this.apiUrl}/${id}`;
+    console.log(url)
+    const result = this.http.get<IOwnerModel>(url, this.options);
+    console.log('get owner result')
+    console.log(result)
+    return result;
+  }
 
-    createOwner(owner: IOwnerModel): Observable<IOwnerModel> {
-        return this.http.post<IOwnerModel>(this.apiUrl, owner);
-    }
+  createOwner(owner: IOwnerModel): Observable<IOwnerModel> {
+    return this.http.post<IOwnerModel>(this.apiUrl, owner, this.options);
+  }
 
-    updateOwner(id: string, owner: IOwnerModel): Observable<IOwnerModel> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.put<IOwnerModel>(url, owner);
-    }
+  updateOwner(id: string, owner: IOwnerModel): Observable<IOwnerModel> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<IOwnerModel>(url, owner, this.options);
+  }
 
-    deleteOwner(id: string): Observable<void> {
-        const url = `${this.apiUrl}/${id}`;
-        return this.http.delete<void>(url);
-    }
+  patchOwner(id: string, owner: IOwnerModel): Observable<IOwnerModel> {
+    let url = `${this.apiUrl}/active/${id}`;
+    if(!owner.active)url = `${this.apiUrl}/inactive/${id}`;
+    console.log(url)
+    return this.http.patch<IOwnerModel>(url, this.options);
+  }
+
+  deleteOwner(id: string): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.delete<void>(url, this.options);
+  }
 }
